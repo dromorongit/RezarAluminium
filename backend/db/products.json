@@ -1,0 +1,202 @@
+[
+  {
+    "id": "rezar-001",
+    "name": "Swing Door - Model A",
+    "category": "Swing Doors",
+    "description": "High-quality aluminium swing door with powder coating",
+    "price": 250.00,
+    "currency": "GHS",
+    "images": ["/assets/products/swing-a-1.jpg", "/assets/products/swing-a-2.jpg"],
+    "specs": {
+      "dimensions": "90cm x 210cm",
+      "material": "6063-T5 Aluminium",
+      "finish": "Powder Coated - Red",
+      "glass": "6mm tempered (optional)"
+    },
+    "stock": 12,
+    "slug": "swing-door-model-a",
+    "featured": false,
+    "video": [],
+    "attachments": []
+  },
+  {
+    "id": "rezar-002",
+    "name": "Swing Door - Model B",
+    "category": "Swing Doors",
+    "description": "Durable aluminium swing door with anodized finish",
+    "price": 280.00,
+    "currency": "GHS",
+    "images": ["/assets/products/swing-b-1.jpg", "/assets/products/swing-b-2.jpg"],
+    "specs": {
+      "dimensions": "100cm x 220cm",
+      "material": "6063-T5 Aluminium",
+      "finish": "Anodized - Silver",
+      "glass": "8mm tempered (optional)"
+    },
+    "stock": 8,
+    "slug": "swing-door-model-b",
+    "featured": false,
+    "video": [],
+    "attachments": []
+  },
+  {
+    "id": "rezar-003",
+    "name": "Frameless Door - Elegant",
+    "category": "Frameless Doors",
+    "description": "Sleek frameless aluminium door for modern interiors",
+    "price": 350.00,
+    "currency": "GHS",
+    "images": ["/assets/products/frameless-e-1.jpg", "/assets/products/frameless-e-2.jpg"],
+    "specs": {
+      "dimensions": "80cm x 200cm",
+      "material": "6063-T5 Aluminium",
+      "finish": "Powder Coated - Black",
+      "glass": "10mm tempered"
+    },
+    "stock": 15,
+    "slug": "frameless-door-elegant",
+    "featured": false,
+    "video": [],
+    "attachments": []
+  },
+  {
+    "id": "rezar-004",
+    "name": "Frameless Door - Minimalist",
+    "category": "Frameless Doors",
+    "description": "Minimalist design frameless door with clear glass",
+    "price": 320.00,
+    "currency": "GHS",
+    "images": ["/assets/products/frameless-m-1.jpg", "/assets/products/frameless-m-2.jpg"],
+    "specs": {
+      "dimensions": "85cm x 205cm",
+      "material": "6063-T5 Aluminium",
+      "finish": "Anodized - Clear",
+      "glass": "12mm tempered"
+    },
+    "stock": 10,
+    "slug": "frameless-door-minimalist",
+    "featured": false,
+    "video": [],
+    "attachments": []
+  },
+  {
+    "id": "rezar-005",
+    "name": "Sliding Window - Standard",
+    "category": "Sliding Windows & Doors",
+    "description": "Energy-efficient sliding window with double glazing",
+    "price": 180.00,
+    "currency": "GHS",
+    "images": ["/assets/products/sliding-w-s-1.jpg", "/assets/products/sliding-w-s-2.jpg"],
+    "specs": {
+      "dimensions": "120cm x 150cm",
+      "material": "6063-T5 Aluminium",
+      "finish": "Powder Coated - White",
+      "glass": "Double glazed 6mm + 12mm air gap"
+    },
+    "stock": 20,
+    "slug": "sliding-window-standard",
+    "featured": false,
+    "video": [],
+    "attachments": []
+  },
+  {
+    "id": "rezar-006",
+    "name": "Sliding Door - Patio",
+    "category": "Sliding Windows & Doors",
+    "description": "Large sliding door for patio access",
+    "price": 450.00,
+    "currency": "GHS",
+    "images": ["/assets/products/sliding-d-p-1.jpg", "/assets/products/sliding-d-p-2.jpg"],
+    "specs": {
+      "dimensions": "200cm x 220cm",
+      "material": "6063-T5 Aluminium",
+      "finish": "Anodized - Bronze",
+      "glass": "Double glazed 8mm + 12mm air gap"
+    },
+    "stock": 5,
+    "slug": "sliding-door-patio",
+    "featured": false,
+    "video": [],
+    "attachments": []
+  },
+  {
+    "id": "rezar-007",
+    "name": "Curtain Wall Panel",
+    "category": "Curtain Wall & Aloco Board",
+    "description": "Modular curtain wall panel for commercial buildings",
+    "price": 120.00,
+    "currency": "GHS",
+    "images": ["/assets/products/curtain-p-1.jpg", "/assets/products/curtain-p-2.jpg"],
+    "specs": {
+      "dimensions": "100cm x 100cm",
+      "material": "6063-T5 Aluminium frame with glass",
+      "finish": "Powder Coated - Grey",
+      "glass": "6mm tempered"
+    },
+    "stock": 50,
+    "slug": "curtain-wall-panel",
+    "featured": false,
+    "video": [],
+    "attachments": []
+  },
+  {
+    "id": "rezar-008",
+    "name": "Aloco Board Panel",
+    "category": "Curtain Wall & Aloco Board",
+    "description": "Aluminium composite panel for cladding",
+    "price": 80.00,
+    "currency": "GHS",
+    "images": ["/assets/products/aloco-p-1.jpg", "/assets/products/aloco-p-2.jpg"],
+    "specs": {
+      "dimensions": "122cm x 244cm",
+      "material": "Aluminium composite",
+      "finish": "Various colors available",
+      "thickness": "4mm"
+    },
+    "stock": 30,
+    "slug": "aloco-board-panel",
+    "featured": false,
+    "video": [],
+    "attachments": []
+  },
+  {
+    "id": "rezar-009",
+    "name": "Inch Door - Compact",
+    "category": "Inch Doors",
+    "description": "Compact inch door for utility access",
+    "price": 150.00,
+    "currency": "GHS",
+    "images": ["/assets/products/inch-c-1.jpg", "/assets/products/inch-c-2.jpg"],
+    "specs": {
+      "dimensions": "60cm x 180cm",
+      "material": "6063-T5 Aluminium",
+      "finish": "Powder Coated - Blue",
+      "glass": "4mm tempered"
+    },
+    "stock": 25,
+    "slug": "inch-door-compact",
+    "featured": false,
+    "video": [],
+    "attachments": []
+  },
+  {
+    "id": "rezar-010",
+    "name": "Inch Door - Standard",
+    "category": "Inch Doors",
+    "description": "Standard size inch door with security features",
+    "price": 200.00,
+    "currency": "GHS",
+    "images": ["/assets/products/inch-s-1.jpg", "/assets/products/inch-s-2.jpg"],
+    "specs": {
+      "dimensions": "70cm x 190cm",
+      "material": "6063-T5 Aluminium",
+      "finish": "Anodized - Gold",
+      "glass": "6mm tempered"
+    },
+    "stock": 18,
+    "slug": "inch-door-standard",
+    "featured": false,
+    "video": [],
+    "attachments": []
+  }
+]

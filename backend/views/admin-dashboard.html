@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Rezar Aluminium</title>
+    <link rel="stylesheet" href="/public/css/admin.css">
+</head>
+<body>
+    <div class="dashboard">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3>Rezar Admin</h3>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#dashboard" class="active">Dashboard</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#settings">Settings</a></li>
+            </ul>
+        </nav>
+        <main class="main-content">
+            <header class="topbar">
+                <h1>Dashboard</h1>
+                <button id="logoutBtn">Logout</button>
+            </header>
+            <div class="content">
+                <div id="dashboard-section">
+                    <div class="stats">
+                        <div class="stat-card">
+                            <h3>Total Products</h3>
+                            <p id="totalProducts">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Featured Products</h3>
+                            <p id="featuredCount">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Recent Uploads</h3>
+                            <p id="recentUploads">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="products-section" style="display: none;">
+                    <div class="products-header">
+                        <h2>Product Management</h2>
+                        <button id="addProductBtn">Add New Product</button>
+                    </div>
+                    <table id="productsTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Featured</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Product Form Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Add Product</h2>
+            <form id="productForm" enctype="multipart/form-data">
+                <input type="hidden" id="productId" name="id">
+                <div class="form-group">
+                    <label for="productName">Name:</label>
+                    <input type="text" id="productName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="productCategory">Category:</label>
+                    <select id="productCategory" name="category" required>
+                        <option value="Swing Doors">Swing Doors</option>
+                        <option value="Frameless Doors">Frameless Doors</option>
+                        <option value="Sliding Windows & Doors">Sliding Windows & Doors</option>
+                        <option value="Curtain Wall & Aloco Board">Curtain Wall & Aloco Board</option>
+                        <option value="Inch Doors">Inch Doors</option>
+                        <option value="Custom">Custom</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="productDescription">Description:</label>
+                    <textarea id="productDescription" name="description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Price:</label>
+                    <input type="number" id="productPrice" name="price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="productFeatured">
+                        <input type="checkbox" id="productFeatured" name="featured"> Featured
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label for="productImages">Images:</label>
+                    <input type="file" id="productImages" name="images" multiple accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label for="productVideo">Video:</label>
+                    <input type="file" id="productVideo" name="video" accept="video/*">
+                </div>
+                <div class="form-group">
+                    <label for="productAttachments">Attachments:</label>
+                    <input type="file" id="productAttachments" name="attachments" multiple accept=".pdf,.dwg">
+                </div>
+                <button type="submit">Save Product</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/public/js/admin.js"></script>
+</body>
+</html>
