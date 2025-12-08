@@ -23,15 +23,31 @@ const getFeaturedProducts = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
+    console.log('Creating product:', req.body);
+    console.log('Files:', req.files);
     const { name, category, description, price, featured } = req.body;
 
     // Generate slug
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-    // Handle file uploads
-    const images = req.files.images ? req.files.images.map(file => `/uploads/products/${file.filename}`) : [];
-    const video = req.files.video ? `/uploads/products/${req.files.video[0].filename}` : null;
-    const attachments = req.files.attachments ? req.files.attachments.map(file => `/uploads/products/${file.filename}`) : [];
+    // Handle file uploads (placeholder URLs for Railway - files not persisted)
+    let images = [];
+    let video = [];
+    let attachments = [];
+
+    // For Railway deployment, we'll use placeholder URLs since files aren't persisted
+    // In production, you'd integrate with cloud storage like Cloudinary or AWS S3
+    if (req.files) {
+      if (req.files.images) {
+        images = req.files.images.map((file, index) => `/assets/products/placeholder-image-${index + 1}.jpg`);
+      }
+      if (req.files.video) {
+        video = ['/assets/products/placeholder-video.mp4'];
+      }
+      if (req.files.attachments) {
+        attachments = req.files.attachments.map((file, index) => `/assets/products/placeholder-doc-${index + 1}.pdf`);
+      }
+    }
 
     const newProduct = new Product({
       id: `rezar-${uuidv4().slice(0, 8)}`,
@@ -45,7 +61,7 @@ const createProduct = async (req, res) => {
       stock: 0, // Default
       slug,
       featured: featured === 'true',
-      video: video ? [video] : [],
+      video,
       attachments
     });
 
@@ -53,7 +69,7 @@ const createProduct = async (req, res) => {
     res.json(newProduct);
   } catch (error) {
     console.error('Error creating product:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error: ' + error.message });
   }
 };
 
@@ -62,16 +78,16 @@ const updateProduct = async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
 
-    // Handle file uploads if any
+    // Handle file uploads if any (placeholder URLs for Railway)
     if (req.files) {
       if (req.files.images) {
-        updates.images = req.files.images.map(file => `/uploads/products/${file.filename}`);
+        updates.images = req.files.images.map((file, index) => `/assets/products/placeholder-image-${index + 1}.jpg`);
       }
       if (req.files.video) {
-        updates.video = [`/uploads/products/${req.files.video[0].filename}`];
+        updates.video = ['/assets/products/placeholder-video.mp4'];
       }
       if (req.files.attachments) {
-        updates.attachments = req.files.attachments.map(file => `/uploads/products/${file.filename}`);
+        updates.attachments = req.files.attachments.map((file, index) => `/assets/products/placeholder-doc-${index + 1}.pdf`);
       }
     }
 

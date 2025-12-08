@@ -49,6 +49,20 @@ if (document.getElementById('loginForm')) {
 if (document.querySelector('.dashboard')) {
     let products = [];
 
+    // Check authentication
+    async function checkAuth() {
+        try {
+            const response = await fetch('/api/admin/check');
+            const data = await response.json();
+            if (!data.authenticated) {
+                window.location.href = '/admin/login';
+            }
+        } catch (error) {
+            console.error('Auth check failed:', error);
+            window.location.href = '/admin/login';
+        }
+    }
+
     // Load stats
     async function loadStats() {
         try {
@@ -120,6 +134,17 @@ if (document.querySelector('.dashboard')) {
         const formData = new FormData(e.target);
         const productId = formData.get('id');
 
+        // Ensure featured checkbox value is sent
+        if (!formData.has('featured')) {
+            formData.append('featured', 'false');
+        }
+
+        // Debug: Log form data
+        console.log('Form data:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
+
         const url = productId ? `/api/products/update/${productId}` : '/api/products/create';
         const method = productId ? 'PUT' : 'POST';
 
@@ -134,10 +159,12 @@ if (document.querySelector('.dashboard')) {
                 loadProducts();
                 loadStats();
             } else {
-                alert('Error saving product');
+                const errorData = await response.json();
+                alert('Error saving product: ' + (errorData.message || 'Unknown error'));
             }
         } catch (error) {
             console.error('Error saving product:', error);
+            alert('Error saving product: ' + error.message);
         }
     });
 
@@ -200,6 +227,8 @@ if (document.querySelector('.dashboard')) {
     });
 
     // Initial load
-    loadStats();
-    loadProducts();
+    checkAuth().then(() => {
+        loadStats();
+        loadProducts();
+    });
 }
