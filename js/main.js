@@ -631,7 +631,17 @@ function sendOrderToWhatsApp(order) {
   const encodedMessage = encodeURIComponent(message);
   const whatsappUrl = `${whatsappBusinessLink}?text=${encodedMessage}`;
 
-  window.open(whatsappUrl, '_blank');
+  // Try to open WhatsApp, fallback to regular link if blocked
+  try {
+    const newWindow = window.open(whatsappUrl, '_blank');
+    if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+      // Popup was blocked, redirect instead
+      window.location.href = whatsappUrl;
+    }
+  } catch (error) {
+    // Fallback for any errors
+    window.location.href = whatsappUrl;
+  }
 }
 
 // Contact Page
