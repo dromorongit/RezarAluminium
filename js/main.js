@@ -410,15 +410,17 @@ function renderProductDetail(product) {
   const decreaseBtn = document.querySelector('#decrease-qty');
   const increaseBtn = document.querySelector('#increase-qty');
 
-  decreaseBtn.addEventListener('click', () => {
-    const current = parseInt(qtyInput.value);
-    if (current > 1) qtyInput.value = current - 1;
-  });
+  if (decreaseBtn && increaseBtn && qtyInput) {
+    decreaseBtn.addEventListener('click', () => {
+      const current = parseInt(qtyInput.value);
+      if (current > 1) qtyInput.value = current - 1;
+    });
 
-  increaseBtn.addEventListener('click', () => {
-    const current = parseInt(qtyInput.value);
-    if (current < product.stock) qtyInput.value = current + 1;
-  });
+    increaseBtn.addEventListener('click', () => {
+      const current = parseInt(qtyInput.value);
+      if (current < product.stock) qtyInput.value = current + 1;
+    });
+  }
 
   // Add to cart
   document.querySelector('#add-to-cart-detail').addEventListener('click', () => {
@@ -465,53 +467,61 @@ function renderCart() {
     subtotalEl.textContent = `GHS ${cart.getTotal().toFixed(2)}`;
   }
 
-  // Event listeners
-  document.querySelectorAll('.decrease-qty').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const itemEl = e.target.closest('.cart-item');
-      const id = itemEl.dataset.id;
-      const input = itemEl.querySelector('.quantity-input');
-      const current = parseInt(input.value);
-      if (current > 1) {
-        input.value = current - 1;
-        cart.updateQuantity(id, current - 1);
+  // Remove existing event listeners to prevent duplicates
+  const cartContainer = document.querySelector('.cart-items');
+  if (cartContainer) {
+    const newContainer = cartContainer.cloneNode(true);
+    cartContainer.parentNode.replaceChild(newContainer, cartContainer);
+  }
+
+  // Re-attach event listeners using event delegation
+  const container = document.querySelector('.cart-items');
+  if (container) {
+    container.addEventListener('click', (e) => {
+      const target = e.target;
+
+      if (target.classList.contains('decrease-qty')) {
+        const itemEl = target.closest('.cart-item');
+        const id = itemEl.dataset.id;
+        const input = itemEl.querySelector('.quantity-input');
+        const current = parseInt(input.value);
+        if (current > 1) {
+          input.value = current - 1;
+          cart.updateQuantity(id, current - 1);
+          renderCart();
+        }
+      }
+
+      if (target.classList.contains('increase-qty')) {
+        const itemEl = target.closest('.cart-item');
+        const id = itemEl.dataset.id;
+        const input = itemEl.querySelector('.quantity-input');
+        const current = parseInt(input.value);
+        const item = cart.items.find(i => i.id === id);
+        if (current < item.stock) {
+          input.value = current + 1;
+          cart.updateQuantity(id, current + 1);
+          renderCart();
+        }
+      }
+
+      if (target.classList.contains('remove-item')) {
+        const id = target.dataset.id;
+        cart.removeItem(id);
         renderCart();
       }
     });
-  });
 
-  document.querySelectorAll('.increase-qty').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const itemEl = e.target.closest('.cart-item');
-      const id = itemEl.dataset.id;
-      const input = itemEl.querySelector('.quantity-input');
-      const current = parseInt(input.value);
-      const item = cart.items.find(i => i.id === id);
-      if (current < item.stock) {
-        input.value = current + 1;
-        cart.updateQuantity(id, current + 1);
+    container.addEventListener('change', (e) => {
+      if (e.target.classList.contains('quantity-input')) {
+        const itemEl = e.target.closest('.cart-item');
+        const id = itemEl.dataset.id;
+        const quantity = parseInt(e.target.value);
+        cart.updateQuantity(id, quantity);
         renderCart();
       }
     });
-  });
-
-  document.querySelectorAll('.quantity-input').forEach(input => {
-    input.addEventListener('change', (e) => {
-      const itemEl = e.target.closest('.cart-item');
-      const id = itemEl.dataset.id;
-      const quantity = parseInt(e.target.value);
-      cart.updateQuantity(id, quantity);
-      renderCart();
-    });
-  });
-
-  document.querySelectorAll('.remove-item').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const id = e.target.dataset.id;
-      cart.removeItem(id);
-      renderCart();
-    });
-  });
+  }
 
   if (clearBtn) {
     clearBtn.addEventListener('click', () => {
