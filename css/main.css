@@ -675,53 +675,131 @@ button {
   /* Cart and Checkout Mobile Layouts */
   .cart-layout,
   .checkout-layout {
-    grid-template-columns: 1fr;
-    gap: 32px;
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
 
   .cart-summary-section,
   .checkout-summary-section {
-    position: static;
-    order: -1;
+    position: static !important;
+    order: -1 !important;
   }
 
   .cart-summary-card,
   .checkout-summary {
-    padding: 24px;
+    padding: 24px !important;
+    margin-bottom: 24px !important;
   }
 
   .cart-item {
-    flex-direction: column;
-    text-align: center;
-    gap: 16px;
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 16px !important;
+    padding: 16px !important;
   }
 
   .cart-item img {
-    width: 100px;
-    height: 100px;
+    width: 100px !important;
+    height: 100px !important;
   }
 
   .checkout-form-card {
-    padding: 24px;
+    padding: 24px !important;
+    margin-bottom: 24px !important;
   }
 
   .checkout-progress {
-    margin-bottom: 32px;
+    margin-bottom: 32px !important;
   }
 
   .progress-steps {
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: column !important;
+    gap: 12px !important;
   }
 
   .progress-connector {
-    width: 2px;
-    height: 20px;
+    width: 2px !important;
+    height: 20px !important;
   }
 
   .form-row {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* Force single column for all grid layouts on mobile */
+  .cart-layout > *,
+  .checkout-layout > * {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  /* Tablet and smaller desktop layouts */
+  .cart-layout,
+  .checkout-layout {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .cart-summary-section,
+  .checkout-summary-section {
+    position: static !important;
+    order: -1 !important;
+  }
+
+  .cart-summary-card,
+  .checkout-summary {
+    padding: 24px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .checkout-form-card {
+    padding: 24px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .cart-item {
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 16px !important;
+    padding: 16px !important;
+  }
+
+  .cart-item img {
+    width: 100px !important;
+    height: 100px !important;
+  }
+
+  .checkout-progress {
+    margin-bottom: 32px !important;
+  }
+
+  .progress-steps {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .progress-connector {
+    width: 2px !important;
+    height: 20px !important;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* Force single column for all grid layouts */
+  .cart-layout > *,
+  .checkout-layout > * {
+    width: 100% !important;
+    max-width: 100% !important;
   }
 }
 
