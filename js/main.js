@@ -75,10 +75,17 @@ let products = [];
 
 async function loadProducts() {
   try {
-    const response = await fetch('/data/products.json');
+    const response = await fetch('https://rezaraluminium-production.up.railway.app/api/products');
     products = await response.json();
   } catch (error) {
     console.error('Error loading products:', error);
+    // Fallback to local data if API fails
+    try {
+      const fallbackResponse = await fetch('/data/products.json');
+      products = await fallbackResponse.json();
+    } catch (fallbackError) {
+      console.error('Fallback also failed:', fallbackError);
+    }
   }
 }
 
@@ -229,12 +236,20 @@ function initHomePage() {
   renderServices();
 }
 
-function renderFeaturedProducts() {
+async function renderFeaturedProducts() {
   const container = document.querySelector('.featured-products .grid');
   if (!container) return;
 
-  const featured = products.slice(0, 4);
-  container.innerHTML = featured.map(product => createProductCard(product)).join('');
+  try {
+    const response = await fetch('https://rezaraluminium-production.up.railway.app/api/products/featured');
+    const featured = await response.json();
+    container.innerHTML = featured.map(product => createProductCard(product)).join('');
+  } catch (error) {
+    console.error('Error loading featured products:', error);
+    // Fallback to first 4 products
+    const featured = products.slice(0, 4);
+    container.innerHTML = featured.map(product => createProductCard(product)).join('');
+  }
 }
 
 function renderServices() {
@@ -278,7 +293,7 @@ function createProductCard(product) {
       <img src="${product.images[0]}" alt="${product.name}" class="card__image">
       <div class="card__content">
         <h3 class="card__title">${product.name}</h3>
-        <p class="card__description">${product.short_description}</p>
+        <p class="card__description">${product.description}</p>
         <p class="card__price">${product.currency} ${product.price.toFixed(2)}</p>
         <div class="card__actions">
           <button class="btn btn--secondary add-to-cart" data-id="${product.id}">Add to Cart</button>
@@ -352,7 +367,7 @@ function renderProductDetail(product) {
     </div>
     <div class="product-info">
       <h1>${product.name}</h1>
-      <p class="product-description">${product.short_description}</p>
+      <p class="product-description">${product.description}</p>
       <p class="product-price">${product.currency} ${product.price.toFixed(2)}</p>
       <div class="quantity-selector">
         <button class="quantity-btn" id="decrease-qty">-</button>

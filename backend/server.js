@@ -15,7 +15,10 @@ mongoose.connect(MONGO_URL)
 .catch(err => console.error('MongoDB connection error:', err));
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['https://dromorongit.github.io', 'http://localhost:3000', 'https://rezaraluminium-production.up.railway.app'],
+  credentials: true
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
@@ -28,6 +31,7 @@ app.use(session({
 // Serve static files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/assets', express.static(path.join(__dirname, '../assets')));
 
 // Routes
 const adminRoutes = require('./routes/admin');
