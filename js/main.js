@@ -407,26 +407,38 @@ function renderProductDetail(product) {
     });
   });
 
-  // Quantity controls
+  // Quantity controls - remove existing listeners first
   const qtyInput = document.querySelector('#product-qty');
   const decreaseBtn = document.querySelector('#decrease-qty');
   const increaseBtn = document.querySelector('#increase-qty');
 
   if (decreaseBtn && increaseBtn && qtyInput) {
-    decreaseBtn.addEventListener('click', () => {
-      const current = parseInt(qtyInput.value);
-      if (current > 1) qtyInput.value = current - 1;
+    // Clone and replace to remove existing listeners
+    const newDecreaseBtn = decreaseBtn.cloneNode(true);
+    const newIncreaseBtn = increaseBtn.cloneNode(true);
+    const newQtyInput = qtyInput.cloneNode(true);
+
+    decreaseBtn.parentNode.replaceChild(newDecreaseBtn, decreaseBtn);
+    increaseBtn.parentNode.replaceChild(newIncreaseBtn, increaseBtn);
+    qtyInput.parentNode.replaceChild(newQtyInput, qtyInput);
+
+    // Add new listeners
+    newDecreaseBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const current = parseInt(newQtyInput.value);
+      if (current > 1) newQtyInput.value = current - 1;
     });
 
-    increaseBtn.addEventListener('click', () => {
-      const current = parseInt(qtyInput.value);
-      if (current < product.stock) qtyInput.value = current + 1;
+    newIncreaseBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const current = parseInt(newQtyInput.value);
+      if (current < product.stock) newQtyInput.value = current + 1;
     });
   }
 
   // Add to cart
   document.querySelector('#add-to-cart-detail').addEventListener('click', () => {
-    const quantity = parseInt(qtyInput.value);
+    const quantity = parseInt(newQtyInput.value);
     cart.addItem(product, quantity);
   });
 }
@@ -456,9 +468,9 @@ function renderCart() {
         <h3>${item.name}</h3>
         <p>${item.currency} ${item.price.toFixed(2)}</p>
         <div class="quantity-selector">
-          <button class="quantity-btn decrease-qty">-</button>
-          <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="${item.stock}">
-          <button class="quantity-btn increase-qty">+</button>
+          <button class="quantity-btn decrease-qty" data-id="${item.id}">-</button>
+          <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="${item.stock}" data-id="${item.id}">
+          <button class="quantity-btn increase-qty" data-id="${item.id}">+</button>
         </div>
       </div>
       <button class="remove-item" data-id="${item.id}">Remove</button>
@@ -514,7 +526,7 @@ function renderCart() {
       }
     });
 
-    container.addEventListener('change', (e) => {
+    eventContainer.addEventListener('change', (e) => {
       if (e.target.classList.contains('quantity-input')) {
         const itemEl = e.target.closest('.cart-item');
         const id = itemEl.dataset.id;
