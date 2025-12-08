@@ -21,15 +21,20 @@ if (document.getElementById('loginForm')) {
         const endpoint = isLogin ? '/api/admin/login' : '/api/admin/register';
 
         try {
+            console.log('Sending request to:', endpoint, 'with:', { username, password });
             const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             });
 
+            console.log('Response status:', response.status);
             const data = await response.json();
+            console.log('Response data:', data);
+
             if (response.ok) {
                 if (isLogin) {
+                    console.log('Login successful, redirecting to dashboard');
                     window.location.href = '/admin/dashboard';
                 } else {
                     document.getElementById('message').textContent = 'Registration successful! You can now login.';
@@ -37,10 +42,11 @@ if (document.getElementById('loginForm')) {
                     document.getElementById('toggleForm').click();
                 }
             } else {
-                document.getElementById('message').textContent = data.message;
+                document.getElementById('message').textContent = data.message || 'Login failed';
             }
         } catch (error) {
             console.error('Error:', error);
+            document.getElementById('message').textContent = 'Network error: ' + error.message;
         }
     });
 }

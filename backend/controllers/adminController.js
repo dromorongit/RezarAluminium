@@ -3,12 +3,22 @@ const Admin = require('../models/Admin');
 
 const login = async (req, res) => {
   try {
+    console.log('Login attempt:', req.body);
     const { username, password } = req.body;
     const admin = await Admin.findOne({ username });
+    console.log('Found admin:', admin ? 'yes' : 'no');
 
-    if (admin && await bcrypt.compare(password, admin.password)) {
-      req.session.admin = true;
-      res.json({ message: 'Login successful' });
+    if (admin) {
+      const passwordMatch = await bcrypt.compare(password, admin.password);
+      console.log('Password match:', passwordMatch);
+
+      if (passwordMatch) {
+        req.session.admin = true;
+        console.log('Session set, sending success');
+        res.json({ message: 'Login successful' });
+      } else {
+        res.status(401).json({ message: 'Invalid credentials' });
+      }
     } else {
       res.status(401).json({ message: 'Invalid credentials' });
     }
@@ -55,9 +65,28 @@ const checkAuth = (req, res) => {
   }
 };
 
+const testConnection = async (req, res) => {
+  try {
+    const adminCount = await Admin.countDocuments();
+    const productCount = await Product.countDocuments();
+    res.json({
+      status: 'Connected to MongoDB',
+      adminCount,
+      productCount,
+      mongoUrl: process.env.MONGO_URL ? 'Set' : 'Not set'
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'Database connection failed',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   login,
   register,
   logout,
-  checkAuth
+  checkAuth,
+  testConnection
 };
