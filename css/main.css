@@ -671,6 +671,58 @@ button {
     grid-template-columns: repeat(2, 1fr);
     text-align: left;
   }
+
+  /* Cart and Checkout Mobile Layouts */
+  .cart-layout,
+  .checkout-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .cart-summary-section,
+  .checkout-summary-section {
+    position: static;
+    order: -1;
+  }
+
+  .cart-summary-card,
+  .checkout-summary {
+    padding: 24px;
+  }
+
+  .cart-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .cart-item img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .checkout-form-card {
+    padding: 24px;
+  }
+
+  .checkout-progress {
+    margin-bottom: 32px;
+  }
+
+  .progress-steps {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .progress-connector {
+    width: 2px;
+    height: 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -690,6 +742,59 @@ button {
     width: 50px;
     height: 50px;
     font-size: 20px;
+  }
+
+  /* Enhanced mobile styles for cart and checkout */
+  .cart-title {
+    font-size: 1.75rem;
+  }
+
+  .cart-subtitle {
+    font-size: 1rem;
+  }
+
+  .cart-item {
+    padding: 16px;
+  }
+
+  .cart-item img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .checkout-form-card {
+    padding: 20px;
+  }
+
+  .checkout-form h2 {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+  }
+
+  .checkout-summary {
+    padding: 20px;
+  }
+
+  .checkout-summary h2 {
+    font-size: 1.25rem;
+  }
+
+  .notice {
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .notice__title {
+    font-size: 1rem;
+  }
+
+  .notice__text {
+    font-size: 0.875rem;
+  }
+
+  .btn--large {
+    padding: 14px 24px;
+    font-size: 1rem;
   }
 }
 
