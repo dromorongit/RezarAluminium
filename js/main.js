@@ -75,11 +75,12 @@ let products = [];
 
 async function loadProducts() {
   try {
+    // Fetch from production API where admin system is deployed
     const response = await fetch('https://rezaraluminium-production.up.railway.app/api/products');
     products = await response.json();
   } catch (error) {
-    console.error('Error loading products:', error);
-    // Fallback to local data if API fails
+    console.error('Error loading products from production API:', error);
+    // Fallback to local data if production fails
     try {
       const fallbackResponse = await fetch('/data/products.json');
       products = await fallbackResponse.json();
@@ -241,12 +242,13 @@ async function renderFeaturedProducts() {
   if (!container) return;
 
   try {
+    // Fetch from production API where admin system is deployed
     const response = await fetch('https://rezaraluminium-production.up.railway.app/api/products/featured');
     const featured = await response.json();
     container.innerHTML = featured.map(product => createProductCard(product)).join('');
   } catch (error) {
-    console.error('Error loading featured products:', error);
-    // Fallback to first 4 products
+    console.error('Error loading featured products from production API:', error);
+    // Final fallback to first 4 products
     const featured = products.slice(0, 4);
     container.innerHTML = featured.map(product => createProductCard(product)).join('');
   }
@@ -475,9 +477,9 @@ function renderCart() {
   }
 
   // Re-attach event listeners using event delegation
-  const container = document.querySelector('.cart-items');
-  if (container) {
-    container.addEventListener('click', (e) => {
+  const eventContainer = document.querySelector('.cart-items');
+  if (eventContainer) {
+    eventContainer.addEventListener('click', (e) => {
       const target = e.target;
 
       if (target.classList.contains('decrease-qty')) {
