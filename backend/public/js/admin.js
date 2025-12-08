@@ -140,10 +140,9 @@ if (document.querySelector('.dashboard')) {
         const formData = new FormData(e.target);
         const productId = formData.get('id');
 
-        // Ensure featured checkbox value is sent
-        if (!formData.has('featured')) {
-            formData.append('featured', 'false');
-        }
+        // Handle featured checkbox properly
+        const featuredCheckbox = document.getElementById('productFeatured');
+        formData.set('featured', featuredCheckbox.checked ? 'true' : 'false');
 
         // Debug: Log form data
         console.log('Form data:');
@@ -185,6 +184,10 @@ if (document.querySelector('.dashboard')) {
             document.getElementById('productDescription').value = product.description;
             document.getElementById('productPrice').value = product.price;
             document.getElementById('productFeatured').checked = product.featured;
+            // Clear file inputs for editing (optional)
+            document.getElementById('productImages').value = '';
+            document.getElementById('productVideo').value = '';
+            document.getElementById('productAttachments').value = '';
             modal.style.display = 'block';
         }
     };

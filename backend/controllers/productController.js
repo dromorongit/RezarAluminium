@@ -1,6 +1,12 @@
 const { v4: uuidv4 } = require('uuid');
 const Product = require('../models/Product');
 
+// Function to convert image to base64 data URL
+function bufferToDataURL(buffer, mimetype) {
+  const base64 = buffer.toString('base64');
+  return `data:${mimetype};base64,${base64}`;
+}
+
 const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find();
@@ -30,22 +36,30 @@ const createProduct = async (req, res) => {
     // Generate slug
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-    // Handle file uploads (placeholder URLs for Railway - files not persisted)
+    // Handle file uploads
     let images = [];
     let video = [];
     let attachments = [];
 
-    // For Railway deployment, we'll use placeholder URLs since files aren't persisted
-    // In production, you'd integrate with cloud storage like Cloudinary or AWS S3
     if (req.files) {
-      if (req.files.images) {
-        images = req.files.images.map((file, index) => `/assets/products/placeholder-image-${index + 1}.jpg`);
+      // Convert images to base64 data URLs
+      if (req.files.images && req.files.images.length > 0) {
+        images = req.files.images.map(file => bufferToDataURL(file.buffer, file.mimetype));
       }
-      if (req.files.video) {
-        video = ['/assets/products/placeholder-video.mp4'];
+
+      // Convert video to base64 if it's an image, otherwise use placeholder
+      if (req.files.video && req.files.video.length > 0) {
+        const videoFile = req.files.video[0];
+        if (videoFile.mimetype.startsWith('image/')) {
+          video = [bufferToDataURL(videoFile.buffer, videoFile.mimetype)];
+        } else {
+          video = ['/assets/products/placeholder-video.mp4'];
+        }
       }
-      if (req.files.attachments) {
-        attachments = req.files.attachments.map((file, index) => `/assets/products/placeholder-doc-${index + 1}.pdf`);
+
+      // Convert attachments to base64 data URLs
+      if (req.files.attachments && req.files.attachments.length > 0) {
+        attachments = req.files.attachments.map(file => bufferToDataURL(file.buffer, file.mimetype));
       }
     }
 
@@ -78,16 +92,23 @@ const updateProduct = async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
 
-    // Handle file uploads if any (placeholder URLs for Railway)
+    // Handle file uploads if any
     if (req.files) {
-      if (req.files.images) {
-        updates.images = req.files.images.map((file, index) => `/assets/products/placeholder-image-${index + 1}.jpg`);
+      if (req.files.images && req.files.images.length > 0) {
+        updates.images = req.files.images.map(file => bufferToDataURL(file.buffer, file.mimetype));
       }
-      if (req.files.video) {
-        updates.video = ['/assets/products/placeholder-video.mp4'];
+
+      if (req.files.video && req.files.video.length > 0) {
+        const videoFile = req.files.video[0];
+        if (videoFile.mimetype.startsWith('image/')) {
+          updates.video = [bufferToDataURL(videoFile.buffer, videoFile.mimetype)];
+        } else {
+          updates.video = ['/assets/products/placeholder-video.mp4'];
+        }
       }
-      if (req.files.attachments) {
-        updates.attachments = req.files.attachments.map((file, index) => `/assets/products/placeholder-doc-${index + 1}.pdf`);
+
+      if (req.files.attachments && req.files.attachments.length > 0) {
+        updates.attachments = req.files.attachments.map(file => bufferToDataURL(file.buffer, file.mimetype));
       }
     }
 
