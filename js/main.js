@@ -99,6 +99,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     initCartPage();
   } else if (path.endsWith('checkout.html')) {
     initCheckoutPage();
+  } else if (path.endsWith('contact.html')) {
+    initContactPage();
   }
 
   // Common components
@@ -557,7 +559,8 @@ function initCheckoutForm() {
       paymentMethod: form.payment.value
     };
 
-    console.log('Order submitted:', orderData);
+    // Send WhatsApp message
+    sendOrderToWhatsApp(orderData);
 
     // Clear cart and show confirmation
     cart.clear();
@@ -576,6 +579,92 @@ function showOrderConfirmation(order) {
     </div>
   `;
   openModal(modalContent);
+}
+
+function sendOrderToWhatsApp(order) {
+  const whatsappBusinessLink = 'https://wa.me/message/B42ODIFA73VQA1'; // Business WhatsApp link
+
+  let message = `New Order Received\n\n`;
+  message += `Customer Details:\n`;
+  message += `Name: ${order.customer.name}\n`;
+  message += `Email: ${order.customer.email}\n`;
+  message += `Phone: ${order.customer.phone}\n`;
+  if (order.customer.company) message += `Company: ${order.customer.company}\n`;
+  message += `Address: ${order.customer.address}, ${order.customer.city}, ${order.customer.country}\n\n`;
+
+  message += `Order Items:\n`;
+  order.items.forEach(item => {
+    message += `- ${item.name} (Qty: ${item.quantity}) - GHS ${(item.price * item.quantity).toFixed(2)}\n`;
+  });
+
+  message += `\nTotal: GHS ${order.total.toFixed(2)}\n`;
+  message += `Payment Method: ${order.paymentMethod}\n`;
+
+  const encodedMessage = encodeURIComponent(message);
+  const whatsappUrl = `${whatsappBusinessLink}?text=${encodedMessage}`;
+
+  window.open(whatsappUrl, '_blank');
+}
+
+// Contact Page
+function initContactPage() {
+  initContactForm();
+}
+
+function initContactForm() {
+  const form = document.querySelector('.contact-form');
+  if (!form) return;
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Basic validation
+    const required = form.querySelectorAll('[required]');
+    let valid = true;
+
+    required.forEach(field => {
+      if (!field.value.trim()) {
+        field.style.borderColor = 'red';
+        valid = false;
+      } else {
+        field.style.borderColor = '#ddd';
+      }
+    });
+
+    if (!valid) {
+      showToast('Please fill in all required fields');
+      return;
+    }
+
+    // Send WhatsApp message
+    const contactData = {
+      name: form.name.value,
+      email: form.email.value,
+      phone: form.phone.value,
+      subject: form.subject.value,
+      message: form.message.value
+    };
+
+    sendContactToWhatsApp(contactData);
+    showToast('Message sent successfully!');
+    form.reset();
+  });
+}
+
+function sendContactToWhatsApp(contact) {
+  const whatsappBusinessLink = 'https://wa.me/message/B42ODIFA73VQA1'; // Business WhatsApp link
+
+  let message = `New Contact Message\n\n`;
+  message += `Name: ${contact.name}\n`;
+  message += `Email: ${contact.email}\n`;
+  if (contact.phone) message += `Phone: ${contact.phone}\n`;
+  message += `Subject: ${contact.subject}\n\n`;
+  message += `Message:\n${contact.message}\n`;
+
+  const encodedMessage = encodeURIComponent(message);
+  const whatsappUrl = `${whatsappBusinessLink}?text=${encodedMessage}`;
+
+  window.open(whatsappUrl, '_blank');
 }
 
 // Event delegation for dynamic elements
