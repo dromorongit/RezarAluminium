@@ -181,7 +181,8 @@ if (document.querySelector('.dashboard')) {
             document.getElementById('productId').value = product.id;
             document.getElementById('productName').value = product.name;
             document.getElementById('productCategory').value = product.category;
-            document.getElementById('productDescription').value = product.description;
+            document.getElementById('productShortDescription').value = product.shortDescription || '';
+            document.getElementById('productLongDescription').value = product.longDescription || '';
             document.getElementById('productPrice').value = product.price;
             document.getElementById('productFeatured').checked = product.featured;
             // Clear file inputs for editing (optional)

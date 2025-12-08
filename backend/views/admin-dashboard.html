@@ -86,8 +86,12 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="productDescription">Description:</label>
-                    <textarea id="productDescription" name="description" required></textarea>
+                    <label for="productShortDescription">Short Description (shows on product cards):</label>
+                    <textarea id="productShortDescription" name="shortDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="productLongDescription">Long Description (shows on product details page - optional):</label>
+                    <textarea id="productLongDescription" name="longDescription"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="productPrice">Price:</label>
@@ -107,8 +111,8 @@
                     <input type="file" id="productVideo" name="video" accept="video/*">
                 </div>
                 <div class="form-group">
-                    <label for="productAttachments">Attachments:</label>
-                    <input type="file" id="productAttachments" name="attachments" multiple accept=".pdf,.dwg">
+                    <label for="productAttachments">Additional Images (more photos of the product/project):</label>
+                    <input type="file" id="productAttachments" name="attachments" multiple accept="image/*">
                 </div>
                 <button type="submit">Save Product</button>
             </form>

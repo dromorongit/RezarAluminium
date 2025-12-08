@@ -293,7 +293,7 @@ function createProductCard(product) {
       <img src="${product.images[0]}" alt="${product.name}" class="card__image">
       <div class="card__content">
         <h3 class="card__title">${product.name}</h3>
-        <p class="card__description">${product.description}</p>
+        <p class="card__description">${product.shortDescription || product.description}</p>
         <p class="card__price">${product.currency} ${product.price.toFixed(2)}</p>
         <div class="card__actions">
           <button class="btn btn--secondary add-to-cart" data-id="${product.id}">Add to Cart</button>
@@ -358,16 +358,31 @@ function renderProductDetail(product) {
   const container = document.querySelector('.product-detail');
   if (!container) return;
 
+  // Combine main images and additional images for gallery
+  const allImages = [...(product.images || []), ...(product.additionalImages || [])];
+
   container.innerHTML = `
     <div class="product-gallery">
-      <img src="${product.images[0]}" alt="${product.name}" id="main-image">
+      <img src="${allImages[0] || '/assets/products/placeholder-image.jpg'}" alt="${product.name}" id="main-image">
       <div class="gallery-thumbs">
-        ${product.images.map((img, index) => `<img src="${img}" alt="${product.name} ${index + 1}" class="thumb" data-index="${index}">`).join('')}
+        ${allImages.map((img, index) => `<img src="${img}" alt="${product.name} ${index + 1}" class="thumb" data-index="${index}">`).join('')}
       </div>
     </div>
     <div class="product-info">
       <h1>${product.name}</h1>
-      <p class="product-description">${product.description}</p>
+      <div class="product-description">
+        <p><strong>Short Description:</strong> ${product.shortDescription || product.description}</p>
+        ${product.longDescription ? `<p><strong>Full Description:</strong> ${product.longDescription}</p>` : ''}
+        ${product.category ? `<p><strong>Category:</strong> ${product.category}</p>` : ''}
+        ${product.specs && Object.keys(product.specs).length > 0 ? `
+          <div class="product-specs">
+            <h3>Specifications:</h3>
+            <ul>
+              ${Object.entries(product.specs).map(([key, value]) => `<li><strong>${key}:</strong> ${value}</li>`).join('')}
+            </ul>
+          </div>
+        ` : ''}
+      </div>
       <p class="product-price">${product.currency} ${product.price.toFixed(2)}</p>
       <div class="quantity-selector">
         <button class="quantity-btn" id="decrease-qty">-</button>

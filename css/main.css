@@ -300,7 +300,8 @@ button {
 .card__image {
   width: 100%;
   height: 200px;
-  object-fit: cover;
+  object-fit: contain;
+  background-color: #f8f9fa;
 }
 
 .card__content {
@@ -334,6 +335,68 @@ button {
 /* Product Card */
 .product-card .card__image {
   aspect-ratio: 4/3;
+}
+
+/* Product Gallery */
+.product-gallery img#main-image {
+  width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+  background-color: #f8f9fa;
+}
+
+.gallery-thumbs {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.gallery-thumbs .thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color var(--transition);
+}
+
+.gallery-thumbs .thumb:hover {
+  border-color: var(--primary-color);
+}
+
+/* Product Details */
+.product-description p {
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.product-specs {
+  margin-top: 24px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.product-specs h3 {
+  margin-bottom: 16px;
+  color: var(--secondary-color);
+  font-size: 1.25rem;
+}
+
+.product-specs ul {
+  list-style: none;
+  padding: 0;
+}
+
+.product-specs li {
+  padding: 8px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.product-specs li:last-child {
+  border-bottom: none;
 }
 
 /* Service Card */
@@ -702,7 +765,8 @@ button {
 .cart-item img {
   width: 80px;
   height: 80px;
-  object-fit: cover;
+  object-fit: contain;
+  background-color: #f8f9fa;
   border-radius: 8px;
 }
 
@@ -1010,7 +1074,8 @@ button {
 .checkout-item img {
   width: 50px;
   height: 50px;
-  object-fit: cover;
+  object-fit: contain;
+  background-color: #f8f9fa;
   border-radius: 6px;
 }
 

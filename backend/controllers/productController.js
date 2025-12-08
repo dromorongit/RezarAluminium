@@ -31,23 +31,28 @@ const createProduct = async (req, res) => {
   try {
     console.log('Creating product:', req.body);
     console.log('Files:', req.files);
-    const { name, category, description, price, featured } = req.body;
+    const { name, category, shortDescription, longDescription, price, featured } = req.body;
 
     // Generate slug
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
     // Handle file uploads
     let images = [];
+    let additionalImages = [];
     let video = [];
-    let attachments = [];
 
     if (req.files) {
-      // Convert images to base64 data URLs
+      // Main product images
       if (req.files.images && req.files.images.length > 0) {
         images = req.files.images.map(file => bufferToDataURL(file.buffer, file.mimetype));
       }
 
-      // Convert video to base64 if it's an image, otherwise use placeholder
+      // Additional project/product images (from attachments field)
+      if (req.files.attachments && req.files.attachments.length > 0) {
+        additionalImages = req.files.attachments.map(file => bufferToDataURL(file.buffer, file.mimetype));
+      }
+
+      // Video
       if (req.files.video && req.files.video.length > 0) {
         const videoFile = req.files.video[0];
         if (videoFile.mimetype.startsWith('image/')) {
@@ -56,27 +61,24 @@ const createProduct = async (req, res) => {
           video = ['/assets/products/placeholder-video.mp4'];
         }
       }
-
-      // Convert attachments to base64 data URLs
-      if (req.files.attachments && req.files.attachments.length > 0) {
-        attachments = req.files.attachments.map(file => bufferToDataURL(file.buffer, file.mimetype));
-      }
     }
 
     const newProduct = new Product({
       id: `rezar-${uuidv4().slice(0, 8)}`,
       name,
       category,
-      description,
+      shortDescription,
+      longDescription: longDescription || '',
       price: parseFloat(price),
       currency: 'GHS',
       images,
+      additionalImages,
       specs: {}, // Can be extended
       stock: 0, // Default
       slug,
       featured: featured === 'true',
       video,
-      attachments
+      attachments: [] // Keep empty for potential future use
     });
 
     await newProduct.save();
@@ -98,6 +100,10 @@ const updateProduct = async (req, res) => {
         updates.images = req.files.images.map(file => bufferToDataURL(file.buffer, file.mimetype));
       }
 
+      if (req.files.attachments && req.files.attachments.length > 0) {
+        updates.additionalImages = req.files.attachments.map(file => bufferToDataURL(file.buffer, file.mimetype));
+      }
+
       if (req.files.video && req.files.video.length > 0) {
         const videoFile = req.files.video[0];
         if (videoFile.mimetype.startsWith('image/')) {
@@ -105,10 +111,6 @@ const updateProduct = async (req, res) => {
         } else {
           updates.video = ['/assets/products/placeholder-video.mp4'];
         }
-      }
-
-      if (req.files.attachments && req.files.attachments.length > 0) {
-        updates.attachments = req.files.attachments.map(file => bufferToDataURL(file.buffer, file.mimetype));
       }
     }
 
