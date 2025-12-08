@@ -1284,6 +1284,33 @@ button {
   line-height: 1.6;
 }
 
+/* FAQ Page Styles */
+.faq-list {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  background: var(--accent-color);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+
+.faq-item h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--secondary-color);
+}
+
+.faq-item p {
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
 /* Contact Page Styles */
 .contact-hero {
   background: linear-gradient(135deg, var(--primary-color) 0%, #2c3e50 100%);
