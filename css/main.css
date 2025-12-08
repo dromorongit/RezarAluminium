@@ -566,7 +566,12 @@ button {
 
 /* Responsive */
 @media (max-width: 768px) {
-  .header__nav {
+  .nav-link--about,
+  .nav-link--contact {
+    display: none;
+  }
+
+  .header__actions .cart-icon {
     display: none;
   }
 
@@ -600,8 +605,8 @@ button {
   }
 
   .footer__container {
-    grid-template-columns: 1fr;
-    text-align: center;
+    grid-template-columns: repeat(2, 1fr);
+    text-align: left;
   }
 }
 
