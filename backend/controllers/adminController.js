@@ -1,53 +1,41 @@
 const bcrypt = require('bcryptjs');
-const fs = require('fs');
-const path = require('path');
-
-const ADMINS_FILE = path.join(__dirname, '../db/admins.json');
-
-const readAdmins = () => {
-  try {
-    const data = fs.readFileSync(ADMINS_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (err) {
-    console.error('Error reading admins file:', err);
-    return [];
-  }
-};
-
-const writeAdmins = (admins) => {
-  try {
-    fs.writeFileSync(ADMINS_FILE, JSON.stringify(admins, null, 2));
-  } catch (err) {
-    console.error('Error writing admins file:', err);
-  }
-};
+const Admin = require('../models/Admin');
 
 const login = async (req, res) => {
-  const { username, password } = req.body;
-  const admins = readAdmins();
-  const admin = admins.find(a => a.username === username);
+  try {
+    const { username, password } = req.body;
+    const admin = await Admin.findOne({ username });
 
-  if (admin && await bcrypt.compare(password, admin.password)) {
-    req.session.admin = true;
-    res.json({ message: 'Login successful' });
-  } else {
-    res.status(401).json({ message: 'Invalid credentials' });
+    if (admin && await bcrypt.compare(password, admin.password)) {
+      req.session.admin = true;
+      res.json({ message: 'Login successful' });
+    } else {
+      res.status(401).json({ message: 'Invalid credentials' });
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
 const register = async (req, res) => {
-  const { username, password } = req.body;
-  const admins = readAdmins();
+  try {
+    const { username, password } = req.body;
 
-  if (admins.find(a => a.username === username)) {
-    return res.status(400).json({ message: 'Username already exists' });
+    const existingAdmin = await Admin.findOne({ username });
+    if (existingAdmin) {
+      return res.status(400).json({ message: 'Username already exists' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newAdmin = new Admin({ username, password: hashedPassword });
+    await newAdmin.save();
+
+    res.json({ message: 'Registration successful' });
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({ message: 'Server error' });
   }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-  admins.push({ username, password: hashedPassword });
-  writeAdmins(admins);
-
-  res.json({ message: 'Registration successful' });
 };
 
 const logout = (req, res) => {

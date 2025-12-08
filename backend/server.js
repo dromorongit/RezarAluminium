@@ -3,9 +3,16 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
+const mongoose = require('mongoose');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const MONGO_URL = process.env.MONGO_URL || 'mongodb://mongo:mVQnmCFeuQbLrziRFAOyYMvztBVSItqY@mongodb.railway.internal:27017';
+
+// Connect to MongoDB
+mongoose.connect(MONGO_URL)
+.then(() => console.log('Connected to MongoDB'))
+.catch(err => console.error('MongoDB connection error:', err));
 
 // Middleware
 app.use(cors());
