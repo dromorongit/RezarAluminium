@@ -1524,3 +1524,44 @@ button {
   color: #666;
   margin: 0;
 }
+
+/* Notice Styles */
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid;
+  margin-bottom: 32px;
+}
+
+.notice--warning {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+.notice__icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: #f59e0b;
+}
+
+.notice__content {
+  flex: 1;
+}
+
+.notice__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #92400e;
+}
+
+.notice__text {
+  margin: 0;
+  line-height: 1.6;
+  color: #92400e;
+}
