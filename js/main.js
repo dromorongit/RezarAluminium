@@ -585,8 +585,7 @@ function initCheckoutForm() {
         country: form.country.value
       },
       items: cart.items,
-      total: cart.getTotal(),
-      paymentMethod: form.payment.value
+      total: cart.getTotal()
     };
 
     // Send WhatsApp message
@@ -628,7 +627,6 @@ function sendOrderToWhatsApp(order) {
   });
 
   message += `\nTotal: GHS ${order.total.toFixed(2)}\n`;
-  message += `Payment Method: ${order.paymentMethod}\n`;
 
   const encodedMessage = encodeURIComponent(message);
   const whatsappUrl = `${whatsappBusinessLink}?text=${encodedMessage}`;
