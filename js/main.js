@@ -89,9 +89,11 @@ async function loadProducts() {
     const endTime = Date.now();
     console.log('Frontend: API response status:', response.status);
     console.log('Frontend: API response time:', endTime - startTime + 'ms');
+    console.log('Frontend: Response headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorText = await response.text().catch(() => 'No error details available');
+      throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
     }
 
     products = await response.json();
@@ -102,7 +104,9 @@ async function loadProducts() {
         id: products[0].id,
         name: products[0].name,
         featured: products[0].featured,
-        category: products[0].category
+        category: products[0].category,
+        price: products[0].price,
+        images: products[0].images?.length || 0
       });
     } else {
       console.warn('Frontend: No products found in the database - check if products have been added via admin');
@@ -110,8 +114,29 @@ async function loadProducts() {
 
   } catch (error) {
     console.error('Frontend: Failed to load products from production API:', error.message);
-    console.error('Frontend: Error details:', error);
-    console.log('Frontend: No fallback available - products array will be empty');
+    console.error('Frontend: Error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack,
+      cause: error.cause
+    });
+
+    // Show user-friendly error message
+    showToast('Could not load projects. Please refresh the page or try again later.');
+
+    // Try to provide more specific error information
+    if (error.message.includes('Failed to fetch')) {
+      console.error('Frontend: Network error - check if backend server is running');
+      console.error('Frontend: Check if CORS is properly configured');
+      console.error('Frontend: Verify that the backend URL is correct');
+    } else if (error.message.includes('404')) {
+      console.error('Frontend: API endpoint not found - check backend routes');
+    } else if (error.message.includes('403') || error.message.includes('401')) {
+      console.error('Frontend: Authentication/Authorization error');
+    } else if (error.message.includes('500')) {
+      console.error('Frontend: Server error - check backend logs');
+    }
+
     products = [];
   }
 }
@@ -271,35 +296,67 @@ async function renderFeaturedProducts() {
     console.log('Frontend: Fetching featured products from production API...');
     const response = await fetch('https://rezaraluminium-production.up.railway.app/api/products/featured');
     console.log('Frontend: Featured API response status:', response.status);
+    console.log('Frontend: Featured API response headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorText = await response.text().catch(() => 'No error details available');
+      throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
     }
 
     const featured = await response.json();
     console.log('Frontend: Featured products received:', featured.length, 'products');
 
+    if (featured.length > 0) {
+      console.log('Frontend: Sample featured product:', {
+        id: featured[0].id,
+        name: featured[0].name,
+        category: featured[0].category
+      });
+    }
+
     if (featured.length === 0) {
       console.log('Frontend: No featured products found in database');
-      container.innerHTML = '<p>No featured products available</p>';
+      container.innerHTML = '<p class="no-products">No featured projects available. Check back soon for our latest work!</p>';
     } else {
       container.innerHTML = featured.map(product => createProductCard(product)).join('');
+      console.log('Frontend: Featured products rendered to DOM');
     }
-    console.log('Frontend: Featured products rendered to DOM');
   } catch (error) {
-    console.error('Frontend: Error loading featured products from production API:', error);
-    // Fallback: Show all products if featured endpoint fails
+    console.error('Frontend: Error loading featured products from production API:', error.message);
+    console.error('Frontend: Featured products error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack,
+      cause: error.cause
+    });
+
+    // Show user-friendly error message
+    if (container) {
+      container.innerHTML = '<p class="error-message">Could not load featured projects. Please refresh the page.</p>';
+    }
+
+    // Try fallback only if we have products loaded
     try {
-      const allProducts = products.filter(p => p.featured);
-      if (allProducts.length > 0) {
-        console.log('Frontend: Using fallback - showing featured products from main products array');
-        container.innerHTML = allProducts.map(product => createProductCard(product)).join('');
+      if (products && products.length > 0) {
+        const allProducts = products.filter(p => p.featured);
+        if (allProducts.length > 0) {
+          console.log('Frontend: Using fallback - showing featured products from main products array');
+          if (container) {
+            container.innerHTML = allProducts.map(product => createProductCard(product)).join('');
+          }
+        } else {
+          console.log('Frontend: No featured products in fallback array either');
+        }
       } else {
-        container.innerHTML = '<p>No featured products available</p>';
+        console.log('Frontend: No products loaded yet for fallback');
       }
     } catch (fallbackError) {
       console.error('Frontend: Fallback also failed:', fallbackError);
-      container.innerHTML = '<p>Error loading featured products. Please try again later.</p>';
+    }
+
+    // Show toast notification for critical errors
+    if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+      showToast('Network error. Please check your internet connection.');
     }
   }
 }

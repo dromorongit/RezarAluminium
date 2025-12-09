@@ -16,34 +16,25 @@ mongoose.connect(MONGO_URL)
 
 // Middleware
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-
-    const allowedOrigins = [
-      'https://dromorongit.github.io',
-      'http://localhost:3000',
-      'https://rezaraluminium-production.up.railway.app',
-      /^http:\/\/localhost:\d+$/, // Allow any localhost port
-      /^http:\/\/127\.0\.0\.1:\d+$/ // Allow any 127.0.0.1 port
-    ];
-
-    const isAllowed = allowedOrigins.some(allowedOrigin => {
-      if (typeof allowedOrigin === 'string') {
-        return allowedOrigin === origin;
-      } else if (allowedOrigin instanceof RegExp) {
-        return allowedOrigin.test(origin);
-      }
-      return false;
-    });
-
-    if (isAllowed) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
+  origin: [
+    'https://dromorongit.github.io',
+    'http://localhost:3000',
+    'https://rezaraluminium-production.up.railway.app',
+    /^http:\/\/localhost:\d+$/,
+    /^http:\/\/127\.0\.0\.1:\d+$/,
+    /^https:\/\/.*\.github\.io$/,
+    /^https:\/\/dromorongit\.github\.io\/.*$/,
+    /^https:\/\/.*\.vercel\.app$/,
+    /^https:\/\/.*\.netlify\.app$/,
+    /^https:\/\/.*\.railway\.app$/,
+    /^https:\/\/.*\.onrender\.com$/,
+    /^https:\/\/.*\.fly\.dev$/,
+    /^https:\/\/.*\.herokuapp\.com$/
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  maxAge: 86400
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
