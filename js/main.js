@@ -280,9 +280,10 @@ function renderProducts(productList) {
 }
 
 function createProductCard(product) {
+  const imageSrc = product.images && product.images[0] ? product.images[0] : '/assets/products/placeholder-image.jpg';
   return `
     <div class="card product-card" data-id="${product.id}">
-      <img src="${product.images[0]}" alt="${product.name}" class="card__image">
+      <img src="${imageSrc}" alt="${product.name}" class="card__image">
       <div class="card__content">
         <h3 class="card__title">${product.name}</h3>
         <p class="card__description">${product.shortDescription || product.description}</p>
@@ -392,7 +393,7 @@ function renderProductDetail(product) {
 
   thumbs.forEach(thumb => {
     thumb.addEventListener('click', () => {
-      mainImage.src = thumb.src;
+      mainImage.src = thumb.src || '/assets/products/placeholder-image.jpg';
       mainImage.alt = thumb.alt;
     });
   });
@@ -552,7 +553,7 @@ function renderCheckoutSummary() {
 
   container.innerHTML = cart.items.map(item => `
     <div class="checkout-item">
-      <img src="${item.images[0]}" alt="${item.name}">
+      <img src="${item.images && item.images[0] ? item.images[0] : '/assets/products/placeholder-image.jpg'}" alt="${item.name}">
       <div>
         <h4>${item.name}</h4>
         <p>Qty: ${item.quantity} × ${item.currency} ${item.price.toFixed(2)}</p>
