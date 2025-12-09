@@ -99,6 +99,7 @@ async function loadProducts() {
 
     products = await response.json();
     console.log(`Frontend: Successfully loaded ${products.length} projects from Railway production backend`);
+    console.log('Frontend: Full projects array:', products);
 
     if (products.length > 0) {
       console.log('Sample project:', {
@@ -387,8 +388,9 @@ function renderServices() {
 // Projects Page
 function initProjectsPage() {
   console.log('Projects Page: Initializing with', projects.length, 'projects loaded');
+  console.log('Projects Page: Global projects array contents:', projects);
 
-  const container = document.querySelector('.products-grid');
+  const container = document.querySelector('.projects-grid');
   if (!container) {
     console.error('Projects Page: Container not found');
     return;
@@ -405,7 +407,7 @@ function initProjectsPage() {
 }
 
 function renderProjects(projectList) {
-  const container = document.querySelector('.products-grid');
+  const container = document.querySelector('.projects-grid');
   if (!container) return;
 
   if (projectList.length === 0) {
