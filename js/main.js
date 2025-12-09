@@ -97,18 +97,18 @@ async function loadProducts() {
       throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
     }
 
-    products = await response.json();
-    console.log(`Frontend: Successfully loaded ${products.length} projects from Railway production backend`);
-    console.log('Frontend: Full projects array:', products);
+    projects = await response.json();
+    console.log(`Frontend: Successfully loaded ${projects.length} projects from Railway production backend`);
+    console.log('Frontend: Full projects array:', projects);
 
-    if (products.length > 0) {
+    if (projects.length > 0) {
       console.log('Sample project:', {
-        id: products[0].id,
-        name: products[0].name,
-        featured: products[0].featured,
-        category: products[0].category,
-        price: products[0].price,
-        images: products[0].images?.length || 0
+        id: projects[0].id,
+        name: projects[0].name,
+        featured: projects[0].featured,
+        category: projects[0].category,
+        price: projects[0].price,
+        images: projects[0].images?.length || 0
       });
     } else {
       console.warn('Frontend: No projects found in the database - check if projects have been added via admin');
@@ -139,7 +139,7 @@ async function loadProducts() {
       console.error('Frontend: Server error on Railway backend - check backend logs');
     }
 
-    products = [];
+    projects = [];
   }
 }
 
