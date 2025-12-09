@@ -439,7 +439,13 @@ function renderProductDetail(product) {
       console.log('Product page: Increase button clicked');
       e.preventDefault();
       const current = parseInt(newQtyInput.value);
-      if (current < product.stock) newQtyInput.value = current + 1;
+      console.log('Product page: Current value:', current, 'Stock:', product.stock);
+      if (current < product.stock) {
+        newQtyInput.value = current + 1;
+        console.log('Product page: Increased to:', newQtyInput.value);
+      } else {
+        console.log('Product page: Cannot increase above stock');
+      }
     });
   } else {
     console.log('Product page: Quantity controls not found or incomplete');
@@ -525,10 +531,14 @@ function renderCart() {
       const input = itemEl.querySelector('.quantity-input');
       const current = parseInt(input.value);
       const item = cart.items.find(i => i.id === id);
+      console.log('Cart page: Current value:', current, 'Stock:', item ? item.stock : 'item not found');
       if (item && current < item.stock) {
         input.value = current + 1;
+        console.log('Cart page: Increased input to:', input.value);
         cart.updateQuantity(id, current + 1);
         renderCart();
+      } else {
+        console.log('Cart page: Cannot increase - condition not met');
       }
     });
   });
