@@ -72,11 +72,54 @@ let products = [];
 
 async function loadProducts() {
   try {
-    // Fetch from production API where admin system is deployed
-    const response = await fetch('https://rezaraluminium-production.up.railway.app/api/products');
+    console.log('Frontend: Loading products from API...');
+
+    // Try production API first
+    const apiUrl = 'https://rezaraluminium-production.up.railway.app/api/products';
+    console.log('Frontend: Attempting to fetch from:', apiUrl);
+
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      credentials: 'include' // Include cookies if needed
+    });
+
+    console.log('Frontend: API response status:', response.status);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     products = await response.json();
+    console.log(`Frontend: Loaded ${products.length} products from API`);
+    console.log('Sample product:', products.length > 0 ? {
+      id: products[0].id,
+      name: products[0].name,
+      featured: products[0].featured,
+      category: products[0].category
+    } : 'No products loaded');
+
+    // Debug: Log all products to see what's available
+    console.log('All products loaded:', products.map(p => ({ id: p.id, name: p.name, featured: p.featured })));
+
   } catch (error) {
-    console.error('Error loading products from production API:', error);
+    console.error('Frontend: Error loading products from production API:', error);
+    console.log('Frontend: Will try to use fallback data from local JSON');
+
+    // Try to load from local JSON file as fallback
+    try {
+      const localResponse = await fetch('data/products.json');
+      const localProducts = await localResponse.json();
+      console.log(`Frontend: Loaded ${localProducts.length} products from local JSON`);
+      products = localProducts;
+    } catch (localError) {
+      console.error('Frontend: Error loading local products:', localError);
+      console.log('Frontend: No products available - using empty array');
+      products = [];
+    }
   }
 }
 
@@ -232,13 +275,31 @@ async function renderFeaturedProducts() {
   if (!container) return;
 
   try {
+    console.log('Frontend: Fetching featured products from API...');
     // Fetch from production API where admin system is deployed
     const response = await fetch('https://rezaraluminium-production.up.railway.app/api/products/featured');
+    console.log('Frontend: Featured API response status:', response.status);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const featured = await response.json();
-    container.innerHTML = featured.map(product => createProductCard(product)).join('');
+    console.log('Frontend: Featured products received:', featured.length, 'products');
+    console.log('Frontend: Featured products data:', featured);
+
+    if (featured.length === 0) {
+      console.warn('Frontend: No featured products found, using fallback');
+      const featured = products.filter(p => p.featured).slice(0, 4);
+      container.innerHTML = featured.map(product => createProductCard(product)).join('');
+    } else {
+      container.innerHTML = featured.map(product => createProductCard(product)).join('');
+    }
+    console.log('Frontend: Featured products rendered to DOM');
   } catch (error) {
-    console.error('Error loading featured products from production API:', error);
+    console.error('Frontend: Error loading featured products from production API:', error);
     // Final fallback to first 4 products
+    console.log('Frontend: Using fallback - first 4 products from main products array');
     const featured = products.slice(0, 4);
     container.innerHTML = featured.map(product => createProductCard(product)).join('');
   }

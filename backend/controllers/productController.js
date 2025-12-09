@@ -9,7 +9,14 @@ function bufferToDataURL(buffer, mimetype) {
 
 const getAllProducts = async (req, res) => {
   try {
+    console.log('GET /api/products - Fetching all products');
     const products = await Product.find();
+    console.log(`GET /api/products - Found ${products.length} products`);
+    console.log('Sample product:', products.length > 0 ? {
+      id: products[0].id,
+      name: products[0].name,
+      featured: products[0].featured
+    } : 'No products found');
     res.json(products);
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -19,7 +26,15 @@ const getAllProducts = async (req, res) => {
 
 const getFeaturedProducts = async (req, res) => {
   try {
+    console.log('GET /api/products/featured - Fetching featured products');
     const featured = await Product.find({ featured: true });
+    console.log(`GET /api/products/featured - Found ${featured.length} featured products`);
+    if (featured.length > 0) {
+      console.log('Sample featured product:', {
+        id: featured[0].id,
+        name: featured[0].name
+      });
+    }
     res.json(featured);
   } catch (error) {
     console.error('Error fetching featured products:', error);
@@ -29,12 +44,20 @@ const getFeaturedProducts = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
-    console.log('Creating product:', req.body);
-    console.log('Files:', req.files);
+    console.log('POST /api/products/create - Creating product');
+    console.log('Product data:', req.body);
+    console.log('Uploaded files:', req.files ? Object.keys(req.files) : 'No files');
+
     const { name, category, shortDescription, longDescription, featured } = req.body;
+
+    if (!name || !category || !shortDescription) {
+      console.error('Missing required fields');
+      return res.status(400).json({ message: 'Missing required fields: name, category, shortDescription' });
+    }
 
     // Generate slug
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    console.log('Generated slug:', slug);
 
     // Handle file uploads
     let images = [];
@@ -42,14 +65,18 @@ const createProduct = async (req, res) => {
     let video = [];
 
     if (req.files) {
+      console.log('Processing file uploads...');
+
       // Main product images
       if (req.files.images && req.files.images.length > 0) {
         images = req.files.images.map(file => bufferToDataURL(file.buffer, file.mimetype));
+        console.log(`Processed ${images.length} main images`);
       }
 
       // Additional project/product images (from attachments field)
       if (req.files.attachments && req.files.attachments.length > 0) {
         additionalImages = req.files.attachments.map(file => bufferToDataURL(file.buffer, file.mimetype));
+        console.log(`Processed ${additionalImages.length} additional images`);
       }
 
       // Video
@@ -60,7 +87,10 @@ const createProduct = async (req, res) => {
         } else {
           video = ['/assets/products/placeholder-video.mp4'];
         }
+        console.log('Processed video:', video.length > 0 ? 'yes' : 'no');
       }
+    } else {
+      console.log('No files uploaded');
     }
 
     const newProduct = new Product({
@@ -81,7 +111,14 @@ const createProduct = async (req, res) => {
       attachments: [] // Keep empty for potential future use
     });
 
+    console.log('Saving new product to database...');
     await newProduct.save();
+    console.log('Product saved successfully:', {
+      id: newProduct.id,
+      name: newProduct.name,
+      featured: newProduct.featured
+    });
+
     res.json(newProduct);
   } catch (error) {
     console.error('Error creating product:', error);
