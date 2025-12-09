@@ -288,7 +288,19 @@ async function renderFeaturedProducts() {
     console.log('Frontend: Featured products rendered to DOM');
   } catch (error) {
     console.error('Frontend: Error loading featured products from production API:', error);
-    container.innerHTML = '<p>Error loading featured products. Please try again later.</p>';
+    // Fallback: Show all products if featured endpoint fails
+    try {
+      const allProducts = products.filter(p => p.featured);
+      if (allProducts.length > 0) {
+        console.log('Frontend: Using fallback - showing featured products from main products array');
+        container.innerHTML = allProducts.map(product => createProductCard(product)).join('');
+      } else {
+        container.innerHTML = '<p>No featured products available</p>';
+      }
+    } catch (fallbackError) {
+      console.error('Frontend: Fallback also failed:', fallbackError);
+      container.innerHTML = '<p>Error loading featured products. Please try again later.</p>';
+    }
   }
 }
 
@@ -335,9 +347,9 @@ function createProductCard(product) {
       <div class="card__content">
         <h3 class="card__title">${product.name}</h3>
         <p class="card__description">${product.shortDescription || product.description}</p>
-        <p class="card__price">${product.currency} ${product.price.toFixed(2)}</p>
+        ${product.price && product.price > 0 ? `<p class="card__price">${product.currency} ${product.price.toFixed(2)}</p>` : '<p class="card__price">Price available on request</p>'}
         <div class="card__actions">
-          <button class="btn btn--secondary add-to-cart" data-id="${product.id}">Add to Cart</button>
+          ${product.price && product.price > 0 ? `<button class="btn btn--secondary add-to-cart" data-id="${product.id}">Add to Cart</button>` : ''}
           <a href="product.html?id=${product.id}" class="btn btn--primary">View More</a>
         </div>
       </div>
