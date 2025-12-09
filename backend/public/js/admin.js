@@ -114,7 +114,6 @@ if (document.querySelector('.dashboard')) {
             row.innerHTML = `
                 <td>${project.name}</td>
                 <td>${project.category}</td>
-                <td>${project.price} ${project.currency}</td>
                 <td>${project.featured ? 'Yes' : 'No'}</td>
                 <td>
                     <button class="btn btn-edit" onclick="editProject('${project.id}')">Edit</button>
