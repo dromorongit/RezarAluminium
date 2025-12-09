@@ -412,7 +412,12 @@ function renderProductDetail(product) {
   const decreaseBtn = document.querySelector('#decrease-qty');
   const increaseBtn = document.querySelector('#increase-qty');
 
+  console.log('Product page: qtyInput found:', !!qtyInput);
+  console.log('Product page: decreaseBtn found:', !!decreaseBtn);
+  console.log('Product page: increaseBtn found:', !!increaseBtn);
+
   if (decreaseBtn && increaseBtn && qtyInput) {
+    console.log('Product page: Attaching quantity event listeners');
     // Clone and replace to remove existing listeners
     const newDecreaseBtn = decreaseBtn.cloneNode(true);
     const newIncreaseBtn = increaseBtn.cloneNode(true);
@@ -424,16 +429,20 @@ function renderProductDetail(product) {
 
     // Add new listeners
     newDecreaseBtn.addEventListener('click', (e) => {
+      console.log('Product page: Decrease button clicked');
       e.preventDefault();
       const current = parseInt(newQtyInput.value);
       if (current > 1) newQtyInput.value = current - 1;
     });
 
     newIncreaseBtn.addEventListener('click', (e) => {
+      console.log('Product page: Increase button clicked');
       e.preventDefault();
       const current = parseInt(newQtyInput.value);
       if (current < product.stock) newQtyInput.value = current + 1;
     });
+  } else {
+    console.log('Product page: Quantity controls not found or incomplete');
   }
 
   // Add to cart
@@ -489,8 +498,10 @@ function renderCart() {
   }
 
   // Attach event listeners directly to buttons after rendering
+  console.log('Cart page: Attaching decrease listeners');
   document.querySelectorAll('.decrease-qty').forEach(btn => {
     btn.addEventListener('click', (e) => {
+      console.log('Cart page: Decrease button clicked for item:', e.target.dataset.id);
       e.preventDefault();
       const id = e.target.dataset.id;
       const itemEl = e.target.closest('.cart-item');
@@ -504,8 +515,10 @@ function renderCart() {
     });
   });
 
+  console.log('Cart page: Attaching increase listeners');
   document.querySelectorAll('.increase-qty').forEach(btn => {
     btn.addEventListener('click', (e) => {
+      console.log('Cart page: Increase button clicked for item:', e.target.dataset.id);
       e.preventDefault();
       const id = e.target.dataset.id;
       const itemEl = e.target.closest('.cart-item');
