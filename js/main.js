@@ -427,7 +427,7 @@ function createProjectCard(project) {
         <p class="card__description">${project.shortDescription || project.description}</p>
         ${project.price && project.price > 0 ? `<p class="card__price">${project.currency} ${project.price.toFixed(2)}</p>` : '<p class="card__price">Price available on request</p>'}
         <div class="card__actions">
-          ${project.price && project.price > 0 ? `<button class="btn btn--secondary add-to-cart" data-id="${project.id}">Add to Cart</button>` : ''}
+          <button class="btn btn--secondary add-to-cart" data-id="${project.id}">Add to Cart</button>
           <a href="product.html?id=${project.id}" class="btn btn--primary">View Details</a>
         </div>
       </div>
