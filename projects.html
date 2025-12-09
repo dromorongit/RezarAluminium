@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects — Rezar Aluminium Company</title>
+    <meta name="description" content="Browse our range of quality aluminium doors, windows, curtain walls and more. Find the perfect solution for your project.">
+    <meta property="og:title" content="Projects — Rezar Aluminium Company">
+    <meta property="og:description" content="Browse our range of quality aluminium doors, windows, curtain walls and more. Find the perfect solution for your project.">
+    <meta property="og:image" content="rezarlogo.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header__container">
+            <a href="index.html">
+                <img src="rezarlogo.jpg" alt="Rezar Aluminium Company Logo" class="header__logo">
+            </a>
+            <nav class="header__nav">
+                <a href="index.html" class="nav-link nav-link--home">Home</a>
+                <a href="projects.html" class="nav-link nav-link--projects">Projects</a>
+                <a href="about.html" class="nav-link nav-link--about">About</a>
+                <a href="contact.html" class="nav-link nav-link--contact">Contact</a>
+            </nav>
+            <div class="header__actions">
+                <a href="cart.html" class="cart-icon" aria-label="Shopping cart">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17,18C15.89,18 15,18.89 15,20A2,2 0 0,0 17,22A2,2 0 0,0 19,20C19,18.89 18.1,18 17,18M1,2V4H3L6.6,11.59L5.25,14.04C5.09,14.32 5,14.65 5,15A2,2 0 0,0 7,17H19V15H7.42A0.25,0.25 0 0,1 7.17,14.75C7.17,14.7 7.18,14.66 7.2,14.63L8.1,13H15.55C16.3,13 16.96,12.58 17.3,11.97L20.88,5.5C20.95,5.34 21,5.17 21,5A1,1 0 0,0 20,4H5.21L4.27,2M7,18C5.89,18 5,18.89 5,20A2,2 0 0,0 7,22A2,2 0 0,0 9,20C9,18.89 8.1,18 7,18Z" fill="currentColor"/>
+                    </svg>
+                    <span class="cart-text">Cart</span>
+                    <span class="cart-badge" style="display: none;">0</span>
+                </a>
+            </div>
+            <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 18H21V16H3V18ZM3 13H21V11H3V13ZM3 6V8H21V6H3Z" fill="currentColor"/>
+                </svg>
+            </button>
+        </div>
+        <nav class="mobile-menu">
+            <div class="mobile-menu__nav">
+                <a href="index.html">Home</a>
+                <a href="projects.html">Projects</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <div class="mobile-menu__actions">
+                <a href="cart.html" class="btn btn--primary">Cart</a>
+                <a href="#quote" class="btn btn--secondary">Request Quote</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="section">
+            <div class="container">
+                <h1 class="text-center mb-32">Our Projects</h1>
+
+                <div class="filters mb-32">
+                    <div class="form-group">
+                        <label for="category-filter" class="form-label">Category</label>
+                        <select id="category-filter" class="form-select">
+                            <option value="">All Categories</option>
+                            <option value="Swing Doors">Swing Doors</option>
+                            <option value="Frameless Doors">Frameless Doors</option>
+                            <option value="Sliding Windows & Doors">Sliding Windows & Doors</option>
+                            <option value="Curtain Wall & Aloco Board">Curtain Wall & Aloco Board</option>
+                            <option value="Inch Doors">Inch Doors</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sort-filter" class="form-label">Sort By</label>
+                        <select id="sort-filter" class="form-select">
+                            <option value="newest">Newest</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid--projects projects-grid">
+                    <!-- Projects will be loaded here by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__column">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer__column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="#quote">Request Quote</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer__column">
+                <h3>Contact Info</h3>
+                <ul>
+                    <li>Kasoa New Town Road</li>
+                    <li>Phone: 024 457 3348</li>
+                    <li>Email: <a href="mailto:ibrahimabubakari707@gmail.com">ibrahimabubakari707@gmail.com</a></li>
+                    <li>Mon-Fri: 8AM-6PM</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer__bottom">
+            <p>Copyright © 2025 Rezar Aluminium Company — All rights reserved</p>
+            <div class="footer__social">
+                <a href="https://www.facebook.com/share/1CJdjf421S/?mibextid=wwXIfr" aria-label="Facebook">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                </a>
+                <a href="https://www.instagram.com/ibrahimrezar?igsh=MTQzMnMxcGd6NDhvag==" aria-label="Instagram">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12.017 0C8.396 0 7.966.021 6.675.07 5.385.118 4.663.26 4.042.46c-.655.208-1.21.48-1.766.977C1.72 1.935 1.448 2.49 1.24 3.145.98 3.766.837 4.488.79 5.778.74 7.069.72 7.5.72 11.083c0 3.583.02 4.014.07 5.305.047 1.29.19 2.012.45 2.633.208.655.48 1.21.977 1.766.546.497 1.101.769 1.766.977.621.2 1.343.342 2.633.39C7.966 21.979 8.396 22 12.017 22c3.621 0 4.051-.021 5.342-.07 1.29-.048 2.012-.19 2.633-.45.655-.208 1.21-.48 1.766-.977.497-.546.769-1.101.977-1.766.2-.621.342-1.343.39-2.633.05-1.291.07-1.722.07-5.305 0-3.583-.02-4.014-.07-5.305-.048-1.29-.19-2.012-.45-2.633-.208-.655-.48-1.21-.977-1.766C20.065 1.72 19.51 1.448 18.855 1.24c-.621-.2-1.343-.342-2.633-.39C16.068.021 15.638 0 12.017 0zm0 1.982c3.536 0 3.957.014 5.356.078 1.37.062 2.115.29 2.616.483.654.256 1.122.56 1.618.977.496.417.8.964 1.056 1.618.193.501.421 1.246.483 2.616.064 1.399.078 1.82.078 5.356s-.014 3.957-.078 5.356c-.062 1.37-.29 2.115-.483 2.616-.256.654-.56 1.122-.977 1.618-.496.496-.964.8-1.618 1.056-.501.193-1.246.421-2.616.483-1.399.064-1.82.078-5.356.078s-3.957-.014-5.356-.078c-1.37-.062-2.115-.29-2.616-.483-.654-.256-1.122-.56-1.618-.977-.496-.417-.8-.964-1.056-1.618-.193-.501-.421-1.246-.483-2.616-.064-1.399-.078-1.82-.078-5.356s.014-3.957.078-5.356c.062-1.37.29-2.115.483-2.616.256-.654.56-1.122.977-1.618.496-.496.964-.8 1.618-1.056.501-.193 1.246-.421 2.616-.483C8.06 1.996 8.481 1.982 12.017 1.982zm0 4.95c-3.732 0-6.767 3.035-6.767 6.767s3.035 6.767 6.767 6.767 6.767-3.035 6.767-6.767-3.035-6.767-6.767-6.767zm0 11.182c-2.41 0-4.365-1.955-4.365-4.365s1.955-4.365 4.365-4.365 4.365 1.955 4.365 4.365-1.955 4.365-4.365 4.365zm6.406-11.182c-.825 0-1.493.668-1.493 1.493s.668 1.493 1.493 1.493 1.493-.668 1.493-1.493-.668-1.493-1.493-1.493z"/>
+                    </svg>
+                </a>
+                <a href="https://wa.me/message/B42ODIFA73VQA1" aria-label="WhatsApp">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <a href="#" class="whatsapp-btn" aria-label="Message us on WhatsApp">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
+        </svg>
+    </a>
+
+    <div class="modal">
+        <div class="modal__content">
+            <!-- Modal content will be inserted here -->
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

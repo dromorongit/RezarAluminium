@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (path === '/' || path.endsWith('index.html')) {
     initHomePage();
-  } else if (path.endsWith('products.html')) {
+  } else if (path.endsWith('projects.html')) {
     initProjectsPage();
   } else if (path.endsWith('product.html')) {
     initProjectPage();
