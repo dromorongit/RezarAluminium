@@ -124,7 +124,7 @@
                     }
 
                     const products = await response.json();
-                    logDebug(`Successfully loaded ${products.length} products from API`);
+                    logDebug(`Successfully loaded ${products.length} products from production API`);
 
                     if (products.length === 0) {
                         statusElement.textContent = 'No products found in the database';
@@ -144,25 +144,9 @@
 
                 } catch (error) {
                     logDebug(`Error fetching products: ${error.message}`);
-                    statusElement.textContent = `❌ Error loading products: ${error.message}`;
+                    statusElement.textContent = `❌ Error loading products from production API: ${error.message}`;
                     statusElement.className = 'status error';
-
-                    // Try fallback to local data
-                    try {
-                        logDebug('Attempting fallback to local products data...');
-                        const localResponse = await fetch('data/products.json');
-                        const localProducts = await localResponse.json();
-
-                        logDebug(`Loaded ${localProducts.length} products from local JSON`);
-                        displayProducts(localProducts);
-
-                        statusElement.textContent = `⚠️ Using fallback data: ${localProducts.length} local products`;
-                        statusElement.className = 'status error';
-                    } catch (localError) {
-                        logDebug(`Fallback failed: ${localError.message}`);
-                        statusElement.textContent = '❌ Failed to load products from both API and local data';
-                        statusElement.className = 'status error';
-                    }
+                    productsContainer.innerHTML = '<p>Failed to load products. Please check the API or try again later.</p>';
                 }
             }
 
