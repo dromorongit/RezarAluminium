@@ -68,7 +68,7 @@ class Cart {
 const cart = new Cart();
 
 // Project Management
-let products = [];
+let projects = [];
 
 async function loadProducts() {
   try {
@@ -97,10 +97,10 @@ async function loadProducts() {
     }
 
     products = await response.json();
-    console.log(`Frontend: Successfully loaded ${products.length} products from production API`);
+    console.log(`Frontend: Successfully loaded ${products.length} projects from production API`);
 
     if (products.length > 0) {
-      console.log('Sample product:', {
+      console.log('Sample project:', {
         id: products[0].id,
         name: products[0].name,
         featured: products[0].featured,
@@ -109,7 +109,7 @@ async function loadProducts() {
         images: products[0].images?.length || 0
       });
     } else {
-      console.warn('Frontend: No products found in the database - check if products have been added via admin');
+      console.warn('Frontend: No projects found in the database - check if projects have been added via admin');
     }
 
   } catch (error) {
@@ -151,9 +151,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (path === '/' || path.endsWith('index.html')) {
     initHomePage();
   } else if (path.endsWith('products.html')) {
-    initProductsPage();
+    initProjectsPage();
   } else if (path.endsWith('product.html')) {
-    initProductPage();
+    initProjectPage();
   } else if (path.endsWith('cart.html')) {
     initCartPage();
   } else if (path.endsWith('checkout.html')) {
@@ -315,11 +315,11 @@ async function renderFeaturedProducts() {
     }
 
     if (featured.length === 0) {
-      console.log('Frontend: No featured products found in database');
-      container.innerHTML = '<p class="no-products">No featured projects available. Check back soon for our latest work!</p>';
+      console.log('Frontend: No featured projects found in database');
+      container.innerHTML = '<p class="no-projects">No featured projects available. Check back soon for our latest work!</p>';
     } else {
-      container.innerHTML = featured.map(product => createProductCard(product)).join('');
-      console.log('Frontend: Featured products rendered to DOM');
+      container.innerHTML = featured.map(project => createProjectCard(project)).join('');
+      console.log('Frontend: Featured projects rendered to DOM');
     }
   } catch (error) {
     console.error('Frontend: Error loading featured products from production API:', error.message);
@@ -335,20 +335,20 @@ async function renderFeaturedProducts() {
       container.innerHTML = '<p class="error-message">Could not load featured projects. Please refresh the page.</p>';
     }
 
-    // Try fallback only if we have products loaded
+    // Try fallback only if we have projects loaded
     try {
-      if (products && products.length > 0) {
-        const allProducts = products.filter(p => p.featured);
-        if (allProducts.length > 0) {
-          console.log('Frontend: Using fallback - showing featured products from main products array');
+      if (projects && projects.length > 0) {
+        const allProjects = projects.filter(p => p.featured);
+        if (allProjects.length > 0) {
+          console.log('Frontend: Using fallback - showing featured projects from main projects array');
           if (container) {
-            container.innerHTML = allProducts.map(product => createProductCard(product)).join('');
+            container.innerHTML = allProjects.map(project => createProjectCard(project)).join('');
           }
         } else {
-          console.log('Frontend: No featured products in fallback array either');
+          console.log('Frontend: No featured projects in fallback array either');
         }
       } else {
-        console.log('Frontend: No products loaded yet for fallback');
+        console.log('Frontend: No projects loaded yet for fallback');
       }
     } catch (fallbackError) {
       console.error('Frontend: Fallback also failed:', fallbackError);
@@ -383,31 +383,49 @@ function renderServices() {
   `).join('');
 }
 
-// Products Page
-function initProductsPage() {
-  renderProducts(products);
+// Projects Page
+function initProjectsPage() {
+  console.log('Projects Page: Initializing with', projects.length, 'projects loaded');
+
+  const container = document.querySelector('.products-grid');
+  if (!container) {
+    console.error('Projects Page: Container not found');
+    return;
+  }
+
+  if (projects.length === 0) {
+    console.warn('Projects Page: No projects available to display');
+    container.innerHTML = '<p class="no-projects">No projects available. Check back soon for our latest work!</p>';
+  } else {
+    console.log('Projects Page: Rendering', projects.length, 'projects');
+    renderProjects(projects);
+  }
   initFilters();
 }
 
-function renderProducts(productList) {
+function renderProjects(projectList) {
   const container = document.querySelector('.products-grid');
   if (!container) return;
 
-  container.innerHTML = productList.map(product => createProductCard(product)).join('');
+  if (projectList.length === 0) {
+    container.innerHTML = '<p class="no-projects">No projects available. Check back soon for our latest work!</p>';
+  } else {
+    container.innerHTML = projectList.map(project => createProjectCard(project)).join('');
+  }
 }
 
-function createProductCard(product) {
-  const imageSrc = product.images && product.images[0] ? product.images[0] : '/assets/products/placeholder-image.jpg';
+function createProjectCard(project) {
+  const imageSrc = project.images && project.images[0] ? project.images[0] : '/assets/products/placeholder-image.jpg';
   return `
-    <div class="card product-card" data-id="${product.id}">
-      <img src="${imageSrc}" alt="${product.name}" class="card__image">
+    <div class="card project-card" data-id="${project.id}">
+      <img src="${imageSrc}" alt="${project.name}" class="card__image">
       <div class="card__content">
-        <h3 class="card__title">${product.name}</h3>
-        <p class="card__description">${product.shortDescription || product.description}</p>
-        ${product.price && product.price > 0 ? `<p class="card__price">${product.currency} ${product.price.toFixed(2)}</p>` : '<p class="card__price">Price available on request</p>'}
+        <h3 class="card__title">${project.name}</h3>
+        <p class="card__description">${project.shortDescription || project.description}</p>
+        ${project.price && project.price > 0 ? `<p class="card__price">${project.currency} ${project.price.toFixed(2)}</p>` : '<p class="card__price">Price available on request</p>'}
         <div class="card__actions">
-          ${product.price && product.price > 0 ? `<button class="btn btn--secondary add-to-cart" data-id="${product.id}">Add to Cart</button>` : ''}
-          <a href="product.html?id=${product.id}" class="btn btn--primary">View More</a>
+          ${project.price && project.price > 0 ? `<button class="btn btn--secondary add-to-cart" data-id="${project.id}">Add to Cart</button>` : ''}
+          <a href="product.html?id=${project.id}" class="btn btn--primary">View Details</a>
         </div>
       </div>
     </div>
@@ -419,48 +437,48 @@ function initFilters() {
   const sortFilter = document.querySelector('#sort-filter');
 
   if (categoryFilter) {
-    categoryFilter.addEventListener('change', filterProducts);
+    categoryFilter.addEventListener('change', filterProjects);
   }
 
   if (sortFilter) {
-    sortFilter.addEventListener('change', sortProducts);
+    sortFilter.addEventListener('change', sortProjects);
   }
 }
 
-function filterProducts() {
+function filterProjects() {
   const category = document.querySelector('#category-filter').value;
-  let filtered = category ? products.filter(p => p.category === category) : products;
-  renderProducts(filtered);
+  let filtered = category ? projects.filter(p => p.category === category) : projects;
+  renderProjects(filtered);
 }
 
-function sortProducts() {
+function sortProjects() {
   const sort = document.querySelector('#sort-filter').value;
-  let sorted = [...products];
+  let sorted = [...projects];
 
   switch (sort) {
     case 'price-low':
-      sorted.sort((a, b) => a.price - b.price);
+      sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
       break;
     case 'price-high':
-      sorted.sort((a, b) => b.price - a.price);
+      sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
       break;
     case 'newest':
     default:
-      // Assume products are already in order
+      // Assume projects are already in order
       break;
   }
 
-  renderProducts(sorted);
+  renderProjects(sorted);
 }
 
-// Project Page
-function initProductPage() {
+// Project Detail Page
+function initProjectPage() {
   const urlParams = new URLSearchParams(window.location.search);
-  const productId = urlParams.get('id');
-  const product = products.find(p => p.id === productId);
+  const projectId = urlParams.get('id');
+  const project = projects.find(p => p.id === projectId);
 
-  if (product) {
-    renderProductDetail(product);
+  if (project) {
+    renderProjectDetail(project);
   }
 }
 
@@ -847,9 +865,9 @@ document.addEventListener('click', (e) => {
   if (e.target.classList.contains('add-to-cart')) {
     e.preventDefault();
     const id = e.target.dataset.id;
-    const product = products.find(p => p.id === id);
-    if (product) {
-      cart.addItem(product);
+    const project = projects.find(p => p.id === id);
+    if (project) {
+      cart.addItem(project);
     }
   }
 });
