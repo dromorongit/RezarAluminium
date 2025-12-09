@@ -76,6 +76,7 @@ async function loadProducts() {
     const apiUrl = 'https://rezaraluminium-production.up.railway.app/api/products';
     console.log('Frontend: Fetching from:', apiUrl);
 
+    const startTime = Date.now();
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
@@ -85,7 +86,9 @@ async function loadProducts() {
       credentials: 'include'
     });
 
+    const endTime = Date.now();
     console.log('Frontend: API response status:', response.status);
+    console.log('Frontend: API response time:', endTime - startTime + 'ms');
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -101,10 +104,13 @@ async function loadProducts() {
         featured: products[0].featured,
         category: products[0].category
       });
+    } else {
+      console.warn('Frontend: No products found in the database - check if products have been added via admin');
     }
 
   } catch (error) {
     console.error('Frontend: Failed to load products from production API:', error.message);
+    console.error('Frontend: Error details:', error);
     console.log('Frontend: No fallback available - products array will be empty');
     products = [];
   }

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Connectivity Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .test-section {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .loading {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .debug-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔌 API Connectivity Test</h1>
+
+    <div class="test-section">
+        <h2>📡 Production API Test</h2>
+        <div id="status" class="status loading">Ready to test API connectivity</div>
+
+        <div class="debug-info">
+            <strong>Test Configuration:</strong><br>
+            <div id="debug-log">API Endpoint: https://rezaraluminium-production.up.railway.app/api/products</div>
+        </div>
+
+        <button id="test-api-btn" onclick="testAPI()">Test API Connection</button>
+        <button id="test-featured-btn" onclick="testFeaturedAPI()">Test Featured Products</button>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Results</h2>
+        <div id="results-container">
+            <p>Click the test buttons above to check API connectivity.</p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Diagnosis</h2>
+        <div id="diagnosis-container">
+            <p>Diagnostic information will appear here after testing.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusElement = document.getElementById('status');
+            const debugLogElement = document.getElementById('debug-log');
+            const resultsContainer = document.getElementById('results-container');
+            const diagnosisContainer = document.getElementById('diagnosis-container');
+
+            function logDebug(message) {
+                debugLogElement.innerHTML += `<br>${new Date().toISOString()}: ${message}`;
+                console.log(message);
+            }
+
+            function logResult(message, isSuccess = true) {
+                const resultElement = document.createElement('div');
+                resultElement.className = isSuccess ? 'status success' : 'status error';
+                resultElement.textContent = message;
+                resultsContainer.appendChild(resultElement);
+            }
+
+            function logDiagnosis(message) {
+                const diagnosisElement = document.createElement('p');
+                diagnosisElement.innerHTML = `<strong>${new Date().toISOString()}:</strong> ${message}`;
+                diagnosisContainer.appendChild(diagnosisElement);
+            }
+
+            async function testAPI() {
+                statusElement.textContent = 'Testing API connection...';
+                statusElement.className = 'status loading';
+
+                resultsContainer.innerHTML = '<p>Testing basic products endpoint...</p>';
+                diagnosisContainer.innerHTML = '<p>Running diagnostics...</p>';
+
+                try {
+                    logDebug('Starting API connectivity test...');
+                    const startTime = Date.now();
+
+                    const response = await fetch('https://rezaraluminium-production.up.railway.app/api/products', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        credentials: 'include'
+                    });
+
+                    const endTime = Date.now();
+                    const responseTime = endTime - startTime;
+
+                    logDebug(`API Response Status: ${response.status}`);
+                    logDebug(`API Response Time: ${responseTime}ms`);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const products = await response.json();
+                    logDebug(`Successfully loaded ${products.length} products`);
+
+                    // Display results
+                    logResult(`✅ API Connection Successful!`, true);
+                    logResult(`📊 Products Found: ${products.length}`, true);
+                    logResult(`⏱️ Response Time: ${responseTime}ms`, true);
+
+                    if (products.length > 0) {
+                        logResult(`📋 Sample Product: ${products[0].name} (${products[0].id})`, true);
+                    }
+
+                    // Run diagnostics
+                    if (products.length === 0) {
+                        logDiagnosis('⚠️ WARNING: No products found in database. Check if products have been added via admin interface.');
+                        logDiagnosis('🔍 DIAGNOSIS: API is working but database is empty.');
+                    } else {
+                        logDiagnosis('✅ SUCCESS: API is working and returning products.');
+                        logDiagnosis('🔍 DIAGNOSIS: Frontend should be able to display products.');
+                    }
+
+                    statusElement.textContent = 'API Test Completed Successfully!';
+                    statusElement.className = 'status success';
+
+                } catch (error) {
+                    logDebug(`API Test Failed: ${error.message}`);
+                    logDebug(`Error details: ${error.stack}`);
+
+                    logResult(`❌ API Connection Failed: ${error.message}`, false);
+
+                    // Run error diagnostics
+                    if (error.message.includes('Failed to fetch')) {
+                        logDiagnosis('🔍 DIAGNOSIS: Network error - cannot reach the API server.');
+                        logDiagnosis('💡 SOLUTION: Check if the production API is running and accessible.');
+                        logDiagnosis('🌐 Try accessing: https://rezaraluminium-production.up.railway.app/api/products');
+                    } else if (error.message.includes('HTTP error! status:')) {
+                        const statusCode = error.message.match(/status: (\d+)/)[1];
+                        logDiagnosis(`🔍 DIAGNOSIS: API returned error status ${statusCode}.`);
+                        if (statusCode === '404') {
+                            logDiagnosis('💡 SOLUTION: API endpoint not found - check backend routes.');
+                        } else if (statusCode === '500') {
+                            logDiagnosis('💡 SOLUTION: Server error - check backend logs.');
+                        }
+                    } else {
+                        logDiagnosis('🔍 DIAGNOSIS: Unknown API error occurred.');
+                        logDiagnosis('💡 SOLUTION: Check browser console for more details.');
+                    }
+
+                    statusElement.textContent = `API Test Failed: ${error.message}`;
+                    statusElement.className = 'status error';
+                }
+            }
+
+            async function testFeaturedAPI() {
+                statusElement.textContent = 'Testing featured products endpoint...';
+                statusElement.className = 'status loading';
+
+                try {
+                    logDebug('Testing featured products endpoint...');
+
+                    const response = await fetch('https://rezaraluminium-production.up.railway.app/api/products/featured', {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    logDebug(`Featured API Response Status: ${response.status}`);
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const featured = await response.json();
+                    logDebug(`Found ${featured.length} featured products`);
+
+                    logResult(`✅ Featured API Working: ${featured.length} featured products`, true);
+
+                    if (featured.length === 0) {
+                        logDiagnosis('ℹ️ INFO: No featured products found - check if any products are marked as featured in admin.');
+                    }
+
+                    statusElement.textContent = 'Featured API Test Completed!';
+                    statusElement.className = 'status success';
+
+                } catch (error) {
+                    logDebug(`Featured API Test Failed: ${error.message}`);
+                    logResult(`❌ Featured API Failed: ${error.message}`, false);
+                    statusElement.textContent = `Featured API Test Failed: ${error.message}`;
+                    statusElement.className = 'status error';
+                }
+            }
+
+            // Expose functions for debugging
+            window.testAPI = testAPI;
+            window.testFeaturedAPI = testFeaturedAPI;
+        });
+    </script>
+</body>
+</html>

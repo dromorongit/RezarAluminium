@@ -37,8 +37,7 @@ rezar-aluminium/
 │   └── main.css            # Main stylesheet
 ├── js/
 │   └── main.js             # Main JavaScript
-├── data/
-│   └── products.json       # Product data
+├── data/                   # Legacy (no longer used)
 ├── assets/
 │   ├── logo.svg            # Company logo
 │   ├── hero-bg.jpg         # Hero background image
@@ -55,34 +54,36 @@ rezar-aluminium/
 
 ## Adding Products
 
-Products are stored in `data/products.json`. Each product object should follow this schema:
+**IMPORTANT**: Products are now managed through the **Production API** and **Admin Dashboard**. The system no longer uses local `data/products.json`.
 
-```json
-{
-  "id": "unique-id",
-  "name": "Product Name",
-  "category": "Category Name",
-  "short_description": "Brief description",
-  "price": 100.00,
-  "currency": "GHS",
-  "images": ["/assets/products/image1.jpg", "/assets/products/image2.jpg"],
-  "specs": {
-    "dimensions": "Width x Height",
-    "material": "Material description",
-    "finish": "Finish type",
-    "glass": "Glass specifications"
-  },
-  "stock": 10,
-  "slug": "url-friendly-name"
-}
-```
+### Product Management System
+
+- **Production API**: `https://rezaraluminium-production.up.railway.app/api/products`
+- **Admin Dashboard**: Accessible at `/admin/dashboard` (requires login)
+- **Database**: MongoDB (hosted on Railway)
 
 ### Steps to Add a Product:
 
-1. Add product images to `assets/products/`
-2. Add product data to `data/products.json`
-3. Ensure image paths match the `images` array
-4. Test the product appears in the products page
+1. **Access Admin Dashboard**: Log in at `/admin/login` (credentials: admin/admin123)
+2. **Add Product**: Use the admin interface to upload product images and data
+3. **Verify API**: Test product display using `test_product_display.html`
+4. **Check Frontend**: Visit `products.html` to see the product appear
+
+### API Endpoints
+
+- `GET /api/products` - Get all products
+- `GET /api/products/featured` - Get featured products only
+- `POST /api/products/create` - Create new product (admin only)
+- `PUT /api/products/update/:id` - Update product (admin only)
+- `DELETE /api/products/delete/:id` - Delete product (admin only)
+
+### Troubleshooting
+
+If products don't appear:
+1. Check browser console for API errors
+2. Verify the production API is accessible
+3. Ensure products are marked as active in admin
+4. Use `test_product_display.html` for debugging
 
 ## Customization
 

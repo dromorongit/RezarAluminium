@@ -10,35 +10,61 @@ function bufferToDataURL(buffer, mimetype) {
 const getAllProducts = async (req, res) => {
   try {
     console.log('GET /api/products - Fetching all products');
+    console.log('GET /api/products - Database query starting...');
+
     const products = await Product.find();
-    console.log(`GET /api/products - Found ${products.length} products`);
-    console.log('Sample product:', products.length > 0 ? {
-      id: products[0].id,
-      name: products[0].name,
-      featured: products[0].featured
-    } : 'No products found');
+    console.log(`GET /api/products - Database query completed. Found ${products.length} products`);
+
+    if (products.length === 0) {
+      console.warn('GET /api/products - WARNING: No products found in database');
+      console.log('GET /api/products - Check if products have been added via admin interface');
+    } else {
+      console.log('GET /api/products - Sample product:', {
+        id: products[0].id,
+        name: products[0].name,
+        featured: products[0].featured,
+        category: products[0].category
+      });
+    }
+
     res.json(products);
   } catch (error) {
-    console.error('Error fetching products:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('GET /api/products - ERROR: Database query failed:', error);
+    console.error('GET /api/products - ERROR details:', {
+      message: error.message,
+      stack: error.stack
+    });
+    res.status(500).json({ message: 'Server error: ' + error.message });
   }
 };
 
 const getFeaturedProducts = async (req, res) => {
   try {
     console.log('GET /api/products/featured - Fetching featured products');
+    console.log('GET /api/products/featured - Database query starting...');
+
     const featured = await Product.find({ featured: true });
-    console.log(`GET /api/products/featured - Found ${featured.length} featured products`);
-    if (featured.length > 0) {
-      console.log('Sample featured product:', {
+    console.log(`GET /api/products/featured - Database query completed. Found ${featured.length} featured products`);
+
+    if (featured.length === 0) {
+      console.warn('GET /api/products/featured - WARNING: No featured products found in database');
+      console.log('GET /api/products/featured - Check if any products are marked as featured in admin');
+    } else {
+      console.log('GET /api/products/featured - Sample featured product:', {
         id: featured[0].id,
-        name: featured[0].name
+        name: featured[0].name,
+        category: featured[0].category
       });
     }
+
     res.json(featured);
   } catch (error) {
-    console.error('Error fetching featured products:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('GET /api/products/featured - ERROR: Database query failed:', error);
+    console.error('GET /api/products/featured - ERROR details:', {
+      message: error.message,
+      stack: error.stack
+    });
+    res.status(500).json({ message: 'Server error: ' + error.message });
   }
 };
 
