@@ -15,7 +15,7 @@
             </div>
             <ul class="sidebar-menu">
                 <li><a href="#dashboard" class="active">Dashboard</a></li>
-                <li><a href="#products">Products</a></li>
+                <li><a href="#projects">Projects</a></li>
                 <li><a href="#admins">Admins</a></li>
                 <li><a href="#settings">Settings</a></li>
             </ul>
@@ -29,11 +29,11 @@
                 <div id="dashboard-section">
                     <div class="stats">
                         <div class="stat-card">
-                            <h3>Total Products</h3>
+                            <h3>Total Projects</h3>
                             <p id="totalProducts">0</p>
                         </div>
                         <div class="stat-card">
-                            <h3>Featured Products</h3>
+                            <h3>Featured Projects</h3>
                             <p id="featuredCount">0</p>
                         </div>
                         <div class="stat-card">
@@ -42,12 +42,12 @@
                         </div>
                     </div>
                 </div>
-                <div id="products-section" style="display: none;">
-                    <div class="products-header">
-                        <h2>Product Management</h2>
-                        <button id="addProductBtn">Add New Product</button>
+                <div id="projects-section" style="display: none;">
+                    <div class="projects-header">
+                        <h2>Project Management</h2>
+                        <button id="addProjectBtn">Add New Project</button>
                     </div>
-                    <table id="productsTable">
+                    <table id="projectsTable">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -57,7 +57,7 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="productsTableBody">
+                        <tbody id="projectsTableBody">
                         </tbody>
                     </table>
                 </div>
@@ -82,20 +82,20 @@
         </main>
     </div>
 
-    <!-- Product Form Modal -->
-    <div id="productModal" class="modal">
+    <!-- Project Form Modal -->
+    <div id="projectModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2 id="modalTitle">Add Product</h2>
-            <form id="productForm" enctype="multipart/form-data">
-                <input type="hidden" id="productId" name="id">
+            <h2 id="modalTitle">Add Project</h2>
+            <form id="projectForm" enctype="multipart/form-data">
+                <input type="hidden" id="projectId" name="id">
                 <div class="form-group">
-                    <label for="productName">Name:</label>
-                    <input type="text" id="productName" name="name" required>
+                    <label for="projectName">Name:</label>
+                    <input type="text" id="projectName" name="name" required>
                 </div>
                 <div class="form-group">
-                    <label for="productCategory">Category:</label>
-                    <select id="productCategory" name="category" required>
+                    <label for="projectCategory">Category:</label>
+                    <select id="projectCategory" name="category" required>
                         <option value="Swing Doors">Swing Doors</option>
                         <option value="Frameless Doors">Frameless Doors</option>
                         <option value="Sliding Windows & Doors">Sliding Windows & Doors</option>
@@ -105,35 +105,35 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="productShortDescription">Short Description (shows on product cards):</label>
-                    <textarea id="productShortDescription" name="shortDescription" required></textarea>
+                    <label for="projectShortDescription">Short Description (shows on project cards):</label>
+                    <textarea id="projectShortDescription" name="shortDescription" required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="productLongDescription">Long Description (shows on product details page - optional):</label>
-                    <textarea id="productLongDescription" name="longDescription"></textarea>
+                    <label for="projectLongDescription">Long Description (shows on project details page - optional):</label>
+                    <textarea id="projectLongDescription" name="longDescription"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="productPrice">Price:</label>
-                    <input type="number" id="productPrice" name="price" step="0.01" required>
+                    <label for="projectPrice">Price:</label>
+                    <input type="number" id="projectPrice" name="price" step="0.01" required>
                 </div>
                 <div class="form-group">
-                    <label for="productFeatured">
-                        <input type="checkbox" id="productFeatured" name="featured"> Featured
+                    <label for="projectFeatured">
+                        <input type="checkbox" id="projectFeatured" name="featured"> Featured
                     </label>
                 </div>
                 <div class="form-group">
-                    <label for="productImages">Images:</label>
-                    <input type="file" id="productImages" name="images" multiple accept="image/*">
+                    <label for="projectImages">Images:</label>
+                    <input type="file" id="projectImages" name="images" multiple accept="image/*">
                 </div>
                 <div class="form-group">
-                    <label for="productVideo">Video:</label>
-                    <input type="file" id="productVideo" name="video" accept="video/*">
+                    <label for="projectVideo">Video:</label>
+                    <input type="file" id="projectVideo" name="video" accept="video/*">
                 </div>
                 <div class="form-group">
-                    <label for="productAttachments">Additional Images (more photos of the product/project):</label>
-                    <input type="file" id="productAttachments" name="attachments" multiple accept="image/*">
+                    <label for="projectAttachments">Additional Images (more photos of the project):</label>
+                    <input type="file" id="projectAttachments" name="attachments" multiple accept="image/*">
                 </div>
-                <button type="submit">Save Product</button>
+                <button type="submit">Save Project</button>
             </form>
         </div>
     </div>

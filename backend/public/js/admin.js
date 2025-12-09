@@ -53,7 +53,7 @@ if (document.getElementById('loginForm')) {
 
 // Dashboard functionality
 if (document.querySelector('.dashboard')) {
-    let products = [];
+    let projects = [];
     let admins = [];
 
     // Check authentication
@@ -83,14 +83,14 @@ if (document.querySelector('.dashboard')) {
         }
     }
 
-    // Load products
-    async function loadProducts() {
+    // Load projects
+    async function loadProjects() {
         try {
             const response = await fetch('/api/products');
-            products = await response.json();
-            renderProductsTable();
+            projects = await response.json();
+            renderProjectsTable();
         } catch (error) {
-            console.error('Error loading products:', error);
+            console.error('Error loading projects:', error);
         }
     }
 
@@ -105,20 +105,20 @@ if (document.querySelector('.dashboard')) {
         }
     }
 
-    // Render products table
-    function renderProductsTable() {
-        const tbody = document.getElementById('productsTableBody');
+    // Render projects table
+    function renderProjectsTable() {
+        const tbody = document.getElementById('projectsTableBody');
         tbody.innerHTML = '';
-        products.forEach(product => {
+        projects.forEach(project => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${product.name}</td>
-                <td>${product.category}</td>
-                <td>${product.price} ${product.currency}</td>
-                <td>${product.featured ? 'Yes' : 'No'}</td>
+                <td>${project.name}</td>
+                <td>${project.category}</td>
+                <td>${project.price} ${project.currency}</td>
+                <td>${project.featured ? 'Yes' : 'No'}</td>
                 <td>
-                    <button class="btn btn-edit" onclick="editProduct('${product.id}')">Edit</button>
-                    <button class="btn btn-delete" onclick="deleteProduct('${product.id}')">Delete</button>
+                    <button class="btn btn-edit" onclick="editProject('${project.id}')">Edit</button>
+                    <button class="btn btn-delete" onclick="deleteProject('${project.id}')">Delete</button>
                 </td>
             `;
             tbody.appendChild(row);
@@ -144,14 +144,14 @@ if (document.querySelector('.dashboard')) {
     }
 
     // Modal functionality
-    const modal = document.getElementById('productModal');
+    const modal = document.getElementById('projectModal');
     const adminModal = document.getElementById('adminModal');
     const closeBtns = document.querySelectorAll('.close');
 
-    document.getElementById('addProductBtn').addEventListener('click', () => {
-        document.getElementById('modalTitle').textContent = 'Add Product';
-        document.getElementById('productForm').reset();
-        document.getElementById('productId').value = '';
+    document.getElementById('addProjectBtn').addEventListener('click', () => {
+        document.getElementById('modalTitle').textContent = 'Add Project';
+        document.getElementById('projectForm').reset();
+        document.getElementById('projectId').value = '';
         modal.style.display = 'block';
     });
 
@@ -176,14 +176,14 @@ if (document.querySelector('.dashboard')) {
         }
     });
 
-    // Product form submission
-    document.getElementById('productForm').addEventListener('submit', async (e) => {
+    // Project form submission
+    document.getElementById('projectForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
-        const productId = formData.get('id');
+        const projectId = formData.get('id');
 
         // Handle featured checkbox properly
-        const featuredCheckbox = document.getElementById('productFeatured');
+        const featuredCheckbox = document.getElementById('projectFeatured');
         formData.set('featured', featuredCheckbox.checked ? 'true' : 'false');
 
         // Debug: Log form data
@@ -192,8 +192,8 @@ if (document.querySelector('.dashboard')) {
             console.log(key, value);
         }
 
-        const url = productId ? `/api/products/update/${productId}` : '/api/products/create';
-        const method = productId ? 'PUT' : 'POST';
+        const url = projectId ? `/api/products/update/${projectId}` : '/api/products/create';
+        const method = projectId ? 'PUT' : 'POST';
 
         try {
             const response = await fetch(url, {
@@ -203,15 +203,15 @@ if (document.querySelector('.dashboard')) {
 
             if (response.ok) {
                 modal.style.display = 'none';
-                loadProducts();
+                loadProjects();
                 loadStats();
             } else {
                 const errorData = await response.json();
-                alert('Error saving product: ' + (errorData.message || 'Unknown error'));
+                alert('Error saving project: ' + (errorData.message || 'Unknown error'));
             }
         } catch (error) {
-            console.error('Error saving product:', error);
-            alert('Error saving product: ' + error.message);
+            console.error('Error saving project:', error);
+            alert('Error saving project: ' + error.message);
         }
     });
 
@@ -243,42 +243,42 @@ if (document.querySelector('.dashboard')) {
         }
     });
 
-    // Edit product
-    window.editProduct = (id) => {
-        const product = products.find(p => p.id === id);
-        if (product) {
-            document.getElementById('modalTitle').textContent = 'Edit Product';
-            document.getElementById('productId').value = product.id;
-            document.getElementById('productName').value = product.name;
-            document.getElementById('productCategory').value = product.category;
-            document.getElementById('productShortDescription').value = product.shortDescription || '';
-            document.getElementById('productLongDescription').value = product.longDescription || '';
-            document.getElementById('productPrice').value = product.price;
-            document.getElementById('productFeatured').checked = product.featured;
+    // Edit project
+    window.editProject = (id) => {
+        const project = projects.find(p => p.id === id);
+        if (project) {
+            document.getElementById('modalTitle').textContent = 'Edit Project';
+            document.getElementById('projectId').value = project.id;
+            document.getElementById('projectName').value = project.name;
+            document.getElementById('projectCategory').value = project.category;
+            document.getElementById('projectShortDescription').value = project.shortDescription || '';
+            document.getElementById('projectLongDescription').value = project.longDescription || '';
+            document.getElementById('projectPrice').value = project.price;
+            document.getElementById('projectFeatured').checked = project.featured;
             // Clear file inputs for editing (optional)
-            document.getElementById('productImages').value = '';
-            document.getElementById('productVideo').value = '';
-            document.getElementById('productAttachments').value = '';
+            document.getElementById('projectImages').value = '';
+            document.getElementById('projectVideo').value = '';
+            document.getElementById('projectAttachments').value = '';
             modal.style.display = 'block';
         }
     };
 
-    // Delete product
-    window.deleteProduct = async (id) => {
-        if (confirm('Are you sure you want to delete this product?')) {
+    // Delete project
+    window.deleteProject = async (id) => {
+        if (confirm('Are you sure you want to delete this project?')) {
             try {
                 const response = await fetch(`/api/products/delete/${id}`, {
                     method: 'DELETE'
                 });
 
                 if (response.ok) {
-                    loadProducts();
+                    loadProjects();
                     loadStats();
                 } else {
-                    alert('Error deleting product');
+                    alert('Error deleting project');
                 }
             } catch (error) {
-                console.error('Error deleting product:', error);
+                console.error('Error deleting project:', error);
             }
         }
     };
@@ -333,7 +333,7 @@ if (document.querySelector('.dashboard')) {
     // Initial load
     checkAuth().then(() => {
         loadStats();
-        loadProducts();
+        loadProjects();
         loadAdmins();
     });
 }
