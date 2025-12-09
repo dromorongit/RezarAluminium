@@ -16,6 +16,7 @@
             <ul class="sidebar-menu">
                 <li><a href="#dashboard" class="active">Dashboard</a></li>
                 <li><a href="#products">Products</a></li>
+                <li><a href="#admins">Admins</a></li>
                 <li><a href="#settings">Settings</a></li>
             </ul>
         </nav>
@@ -57,6 +58,23 @@
                             </tr>
                         </thead>
                         <tbody id="productsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div id="admins-section" style="display: none;">
+                    <div class="products-header">
+                        <h2>Admin Management</h2>
+                        <button id="addAdminBtn">Add New Admin</button>
+                    </div>
+                    <table id="adminsTable">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminsTableBody">
                         </tbody>
                     </table>
                 </div>
@@ -116,6 +134,25 @@
                     <input type="file" id="productAttachments" name="attachments" multiple accept="image/*">
                 </div>
                 <button type="submit">Save Product</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Form Modal -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Admin</h2>
+            <form id="adminForm">
+                <div class="form-group">
+                    <label for="adminUsername">Username:</label>
+                    <input type="text" id="adminUsername" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Password:</label>
+                    <input type="password" id="adminPassword" name="password" required>
+                </div>
+                <button type="submit">Create Admin</button>
             </form>
         </div>
     </div>

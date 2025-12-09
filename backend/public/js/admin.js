@@ -54,6 +54,7 @@ if (document.getElementById('loginForm')) {
 // Dashboard functionality
 if (document.querySelector('.dashboard')) {
     let products = [];
+    let admins = [];
 
     // Check authentication
     async function checkAuth() {
@@ -93,6 +94,17 @@ if (document.querySelector('.dashboard')) {
         }
     }
 
+    // Load admins
+    async function loadAdmins() {
+        try {
+            const response = await fetch('/api/admin/list');
+            admins = await response.json();
+            renderAdminsTable();
+        } catch (error) {
+            console.error('Error loading admins:', error);
+        }
+    }
+
     // Render products table
     function renderProductsTable() {
         const tbody = document.getElementById('productsTableBody');
@@ -113,9 +125,28 @@ if (document.querySelector('.dashboard')) {
         });
     }
 
+    // Render admins table
+    function renderAdminsTable() {
+        const tbody = document.getElementById('adminsTableBody');
+        tbody.innerHTML = '';
+        admins.forEach(admin => {
+            const createdAt = new Date(admin.createdAt).toLocaleDateString();
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${admin.username}</td>
+                <td>${createdAt}</td>
+                <td>
+                    <button class="btn btn-delete" onclick="deleteAdmin('${admin.username}')">Delete</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
     // Modal functionality
     const modal = document.getElementById('productModal');
-    const closeBtn = document.querySelector('.close');
+    const adminModal = document.getElementById('adminModal');
+    const closeBtns = document.querySelectorAll('.close');
 
     document.getElementById('addProductBtn').addEventListener('click', () => {
         document.getElementById('modalTitle').textContent = 'Add Product';
@@ -124,13 +155,24 @@ if (document.querySelector('.dashboard')) {
         modal.style.display = 'block';
     });
 
-    closeBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
+    document.getElementById('addAdminBtn').addEventListener('click', () => {
+        document.getElementById('adminForm').reset();
+        adminModal.style.display = 'block';
+    });
+
+    closeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modal.style.display = 'none';
+            adminModal.style.display = 'none';
+        });
     });
 
     window.addEventListener('click', (e) => {
         if (e.target === modal) {
             modal.style.display = 'none';
+        }
+        if (e.target === adminModal) {
+            adminModal.style.display = 'none';
         }
     });
 
@@ -170,6 +212,34 @@ if (document.querySelector('.dashboard')) {
         } catch (error) {
             console.error('Error saving product:', error);
             alert('Error saving product: ' + error.message);
+        }
+    });
+
+    // Admin form submission
+    document.getElementById('adminForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const username = formData.get('username');
+        const password = formData.get('password');
+
+        try {
+            const response = await fetch('/api/admin/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            if (response.ok) {
+                adminModal.style.display = 'none';
+                loadAdmins();
+                alert('Admin created successfully');
+            } else {
+                const errorData = await response.json();
+                alert('Error creating admin: ' + (errorData.message || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error creating admin:', error);
+            alert('Error creating admin: ' + error.message);
         }
     });
 
@@ -213,6 +283,30 @@ if (document.querySelector('.dashboard')) {
         }
     };
 
+    // Delete admin
+    window.deleteAdmin = async (username) => {
+        if (confirm(`Are you sure you want to delete admin "${username}"?`)) {
+            try {
+                const response = await fetch('/api/admin/delete', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username })
+                });
+
+                if (response.ok) {
+                    loadAdmins();
+                    alert('Admin deleted successfully');
+                } else {
+                    const errorData = await response.json();
+                    alert('Error deleting admin: ' + (errorData.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error deleting admin:', error);
+                alert('Error deleting admin: ' + error.message);
+            }
+        }
+    };
+
     // Logout
     document.getElementById('logoutBtn').addEventListener('click', async () => {
         try {
@@ -240,5 +334,6 @@ if (document.querySelector('.dashboard')) {
     checkAuth().then(() => {
         loadStats();
         loadProducts();
+        loadAdmins();
     });
 }
