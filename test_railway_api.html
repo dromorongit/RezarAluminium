@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Railway API Connection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .loading {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Railway API Connection</h1>
+    <p>This test verifies that the frontend can successfully connect to the Railway production backend.</p>
+
+    <div id="test-results">
+        <h2>Test Results</h2>
+        <div id="api-test" class="test-result loading">
+            <strong>Testing API Connection...</strong>
+            <p>Attempting to connect to: <code>https://rezaraluminium-production.up.railway.app/api/products</code></p>
+        </div>
+    </div>
+
+    <script>
+        async function testRailwayAPI() {
+            const testElement = document.getElementById('api-test');
+
+            try {
+                testElement.classList.remove('loading');
+                testElement.classList.add('loading');
+                testElement.innerHTML = `
+                    <strong>Testing API Connection...</strong>
+                    <p>Attempting to connect to: <code>https://rezaraluminium-production.up.railway.app/api/products</code></p>
+                    <p>Status: Connecting...</p>
+                `;
+
+                const startTime = Date.now();
+                const response = await fetch('https://rezaraluminium-production.up.railway.app/api/products', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+
+                const endTime = Date.now();
+                const responseTime = endTime - startTime;
+
+                if (!response.ok) {
+                    const errorText = await response.text().catch(() => 'No error details available');
+                    throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
+                }
+
+                const products = await response.json();
+
+                testElement.classList.remove('loading');
+                testElement.classList.add('success');
+                testElement.innerHTML = `
+                    <strong>✅ API Connection Successful!</strong>
+                    <p>Connected to: <code>https://rezaraluminium-production.up.railway.app/api/products</code></p>
+                    <p>Response Time: ${responseTime}ms</p>
+                    <p>Status Code: ${response.status}</p>
+                    <p>Products Retrieved: ${products.length}</p>
+
+                    ${products.length > 0 ? `
+                    <details>
+                        <summary>View Sample Product Data</summary>
+                        <pre>${JSON.stringify({
+                            id: products[0].id,
+                            name: products[0].name,
+                            category: products[0].category,
+                            featured: products[0].featured,
+                            price: products[0].price,
+                            images: products[0].images?.length || 0
+                        }, null, 2)}</pre>
+                    </details>
+                    ` : ''}
+                `;
+
+            } catch (error) {
+                testElement.classList.remove('loading');
+                testElement.classList.add('error');
+                testElement.innerHTML = `
+                    <strong>❌ API Connection Failed!</strong>
+                    <p>Failed to connect to: <code>https://rezaraluminium-production.up.railway.app/api/products</code></p>
+                    <p>Error: ${error.message}</p>
+
+                    <details>
+                        <summary>View Error Details</summary>
+                        <pre>${JSON.stringify({
+                            name: error.name,
+                            message: error.message,
+                            stack: error.stack?.split('\n').slice(0, 5).join('\n') || 'No stack trace',
+                            cause: error.cause
+                        }, null, 2)}</pre>
+                    </details>
+
+                    <h3>Troubleshooting Steps:</h3>
+                    <ol>
+                        <li>Check if the Railway backend is running</li>
+                        <li>Verify CORS configuration on the Railway backend</li>
+                        <li>Check network connectivity</li>
+                        <li>Verify the API endpoint exists</li>
+                        <li>Check browser console for more details</li>
+                    </ol>
+                `;
+            }
+        }
+
+        // Run the test when page loads
+        document.addEventListener('DOMContentLoaded', testRailwayAPI);
+    </script>
+</body>
+</html>

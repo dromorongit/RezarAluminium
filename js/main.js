@@ -72,7 +72,8 @@ let projects = [];
 
 async function loadProducts() {
   try {
-    console.log('Frontend: Loading products from production API...');
+    console.log('Frontend: Loading products from Railway production backend...');
+    // Use the Railway production backend URL
     const apiUrl = 'https://rezaraluminium-production.up.railway.app/api/products';
     console.log('Frontend: Fetching from:', apiUrl);
 
@@ -97,7 +98,7 @@ async function loadProducts() {
     }
 
     products = await response.json();
-    console.log(`Frontend: Successfully loaded ${products.length} projects from production API`);
+    console.log(`Frontend: Successfully loaded ${products.length} projects from Railway production backend`);
 
     if (products.length > 0) {
       console.log('Sample project:', {
@@ -113,7 +114,7 @@ async function loadProducts() {
     }
 
   } catch (error) {
-    console.error('Frontend: Failed to load products from production API:', error.message);
+    console.error('Frontend: Failed to load products from Railway production backend:', error.message);
     console.error('Frontend: Error details:', {
       name: error.name,
       message: error.message,
@@ -126,15 +127,15 @@ async function loadProducts() {
 
     // Try to provide more specific error information
     if (error.message.includes('Failed to fetch')) {
-      console.error('Frontend: Network error - check if backend server is running');
-      console.error('Frontend: Check if CORS is properly configured');
-      console.error('Frontend: Verify that the backend URL is correct');
+      console.error('Frontend: Network error - check if Railway backend is running');
+      console.error('Frontend: Check if CORS is properly configured on Railway');
+      console.error('Frontend: Verify that the Railway backend URL is correct');
     } else if (error.message.includes('404')) {
-      console.error('Frontend: API endpoint not found - check backend routes');
+      console.error('Frontend: API endpoint not found on Railway - check backend routes');
     } else if (error.message.includes('403') || error.message.includes('401')) {
-      console.error('Frontend: Authentication/Authorization error');
+      console.error('Frontend: Authentication/Authorization error with Railway backend');
     } else if (error.message.includes('500')) {
-      console.error('Frontend: Server error - check backend logs');
+      console.error('Frontend: Server error on Railway backend - check backend logs');
     }
 
     products = [];
@@ -293,7 +294,7 @@ async function renderFeaturedProducts() {
   if (!container) return;
 
   try {
-    console.log('Frontend: Fetching featured products from production API...');
+    console.log('Frontend: Fetching featured products from Railway production backend...');
     const response = await fetch('https://rezaraluminium-production.up.railway.app/api/products/featured');
     console.log('Frontend: Featured API response status:', response.status);
     console.log('Frontend: Featured API response headers:', Object.fromEntries(response.headers.entries()));
@@ -322,7 +323,7 @@ async function renderFeaturedProducts() {
       console.log('Frontend: Featured projects rendered to DOM');
     }
   } catch (error) {
-    console.error('Frontend: Error loading featured products from production API:', error.message);
+    console.error('Frontend: Error loading featured products from Railway production backend:', error.message);
     console.error('Frontend: Featured products error details:', {
       name: error.name,
       message: error.message,
