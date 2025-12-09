@@ -77,13 +77,6 @@ async function loadProducts() {
     products = await response.json();
   } catch (error) {
     console.error('Error loading products from production API:', error);
-    // Fallback to local data if production fails
-    try {
-      const fallbackResponse = await fetch('/data/products.json');
-      products = await fallbackResponse.json();
-    } catch (fallbackError) {
-      console.error('Fallback also failed:', fallbackError);
-    }
   }
 }
 
