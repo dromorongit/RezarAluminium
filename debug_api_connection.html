@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Connection Debugger</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .debug-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .debug-button {
+            background-color: #2196F3;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .debug-button:hover {
+            background-color: #0b7dda;
+        }
+        .debug-result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        .success {
+            color: green;
+            background-color: #e8f5e9;
+        }
+        .error {
+            color: red;
+            background-color: #ffebee;
+        }
+        .warning {
+            color: orange;
+            background-color: #fff3e0;
+        }
+        .info {
+            color: blue;
+            background-color: #e3f2fd;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5px;
+        }
+        .api-url {
+            font-family: monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        .step {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rezar Aluminium API Connection Debugger</h1>
+    <p>This tool helps diagnose connection issues between your GitHub Pages frontend and Railway backend.</p>
+
+    <div class="debug-section">
+        <h2>🔍 Step 1: Basic Connectivity Test</h2>
+        <p>Test if we can reach the backend server at all.</p>
+        <button class="debug-button" onclick="testBasicConnectivity()">Test Basic Connectivity</button>
+        <div id="basicConnectivityResult" class="debug-result">Click to test basic server connectivity</div>
+    </div>
+
+    <div class="debug-section">
+        <h2>📊 Step 2: All Products API Test</h2>
+        <p>Test the main products endpoint: <span class="api-url">https://rezaraluminium-production.up.railway.app/api/products</span></p>
+        <button class="debug-button" onclick="testAllProductsAPI()">Test All Products API</button>
+        <div id="allProductsResult" class="debug-result">Click to test the all products endpoint</div>
+    </div>
+
+    <div class="debug-section">
+        <h2>⭐ Step 3: Featured Products API Test</h2>
+        <p>Test the featured products endpoint: <span class="api-url">https://rezaraluminium-production.up.railway.app/api/products/featured</span></p>
+        <button class="debug-button" onclick="testFeaturedProductsAPI()">Test Featured Products API</button>
+        <div id="featuredProductsResult" class="debug-result">Click to test the featured products endpoint</div>
+    </div>
+
+    <div class="debug-section">
+        <h2>🔒 Step 4: CORS Headers Test</h2>
+        <p>Test CORS headers and credentials handling.</p>
+        <button class="debug-button" onclick="testCORSHeaders()">Test CORS Headers</button>
+        <div id="corsHeadersResult" class="debug-result">Click to test CORS headers</div>
+    </div>
+
+    <div class="debug-section">
+        <h2>📋 Step 5: Complete Debug Summary</h2>
+        <p>Get a comprehensive summary of all tests and potential solutions.</p>
+        <button class="debug-button" onclick="generateDebugSummary()">Generate Debug Summary</button>
+        <div id="debugSummaryResult" class="debug-result">Click to generate complete debug summary</div>
+    </div>
+
+    <div class="debug-section">
+        <h2>💡 Troubleshooting Guide</h2>
+        <div class="debug-result">
+<strong>Common Issues and Solutions:</strong>
+
+1. <strong>CORS Errors</strong>
+   - Symptom: "No 'Access-Control-Allow-Origin' header" error
+   - Solution: Ensure backend CORS is configured to allow your GitHub Pages domain
+   - Check: Backend server.js should include your domain in allowedOrigins
+
+2. <strong>Network Errors</strong>
+   - Symptom: "Failed to fetch" or network timeout
+   - Solution: Check if backend server is running and accessible
+   - Check: Test backend URL directly in browser
+
+3. <strong>Authentication Errors</strong>
+   - Symptom: 401 or 403 status codes
+   - Solution: Check if API requires authentication
+   - Check: Ensure credentials are being sent correctly
+
+4. <strong>No Products Found</strong>
+   - Symptom: Empty array or 0 products returned
+   - Solution: Add products via admin interface
+   - Check: Verify products exist in database
+
+5. <strong>No Featured Products</strong>
+   - Symptom: Featured endpoint returns empty array
+   - Solution: Mark products as featured in admin
+   - Check: Ensure products have featured: true flag
+
+6. <strong>Database Connection Issues</strong>
+   - Symptom: 500 server errors or timeouts
+   - Solution: Check MongoDB connection in backend
+   - Check: Verify MONGO_URL environment variable
+
+<strong>Debugging Steps:</strong>
+1. Check browser console (F12) for detailed error messages
+2. Test API endpoints directly using Postman or curl
+3. Verify backend logs on Railway for errors
+4. Check MongoDB connection and data
+5. Ensure all environment variables are set correctly
+        </div>
+    </div>
+
+    <script>
+        let debugResults = {
+            basicConnectivity: null,
+            allProducts: null,
+            featuredProducts: null,
+            corsHeaders: null
+        };
+
+        function logResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `debug-result ${type}`;
+            return message;
+        }
+
+        async function testBasicConnectivity() {
+            const resultDiv = document.getElementById('basicConnectivityResult');
+            resultDiv.textContent = 'Testing basic connectivity...';
+            resultDiv.className = 'debug-result info';
+
+            try {
+                // Test with a simple HEAD request first
+                const headResponse = await fetch('https://rezaraluminium-production.up.railway.app/', {
+                    method: 'HEAD',
+                    mode: 'no-cors'
+                });
+
+                if (headResponse.ok || headResponse.type === 'opaque') {
+                    const message = '✅ Basic connectivity: Server is reachable\n' +
+                                   'Status: ' + (headResponse.ok ? headResponse.status : 'Opaque response (CORS blocked)') + '\n' +
+                                   'Server responded to basic request';
+                    debugResults.basicConnectivity = { success: true, message };
+                    logResult('basicConnectivityResult', message, 'success');
+                } else {
+                    const message = '❌ Basic connectivity: Server reachable but returned error\n' +
+                                   'Status: ' + headResponse.status;
+                    debugResults.basicConnectivity = { success: false, message };
+                    logResult('basicConnectivityResult', message, 'error');
+                }
+            } catch (error) {
+                const message = '❌ Basic connectivity: Failed to reach server\n' +
+                               'Error: ' + error.message + '\n' +
+                               'Possible causes:\n' +
+                               '- Backend server not running\n' +
+                               '- Railway deployment not active\n' +
+                               '- Network connectivity issues\n' +
+                               '- DNS resolution problems';
+                debugResults.basicConnectivity = { success: false, message, error: error.message };
+                logResult('basicConnectivityResult', message, 'error');
+                console.error('Basic connectivity error:', error);
+            }
+        }
+
+        async function testAllProductsAPI() {
+            const resultDiv = document.getElementById('allProductsResult');
+            resultDiv.textContent = 'Testing all products API...';
+            resultDiv.className = 'debug-result info';
+
+            try {
+                const startTime = Date.now();
+                const response = await fetch('https://rezaraluminium-production.up.railway.app/api/products', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+
+                const endTime = Date.now();
+                const responseTime = endTime - startTime;
+
+                const headers = {};
+                response.headers.forEach((value, name) => {
+                    headers[name] = value;
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text().catch(() => 'No error details available');
+                    const message = '❌ All Products API: Failed\n' +
+                                   'Status: ' + response.status + '\n' +
+                                   'Response Time: ' + responseTime + 'ms\n' +
+                                   'Error: ' + errorText + '\n' +
+                                   'Headers: ' + JSON.stringify(headers, null, 2);
+                    debugResults.allProducts = { success: false, message, status: response.status };
+                    logResult('allProductsResult', message, 'error');
+                    return;
+                }
+
+                const products = await response.json();
+
+                const message = '✅ All Products API: Success\n' +
+                               'Status: ' + response.status + '\n' +
+                               'Response Time: ' + responseTime + 'ms\n' +
+                               'Products Found: ' + products.length + '\n' +
+                               'CORS Headers: ' + JSON.stringify({
+                                   'Access-Control-Allow-Origin': headers['access-control-allow-origin'],
+                                   'Access-Control-Allow-Credentials': headers['access-control-allow-credentials']
+                               }, null, 2) + '\n' +
+                               (products.length > 0 ? 'Sample Product: ' + JSON.stringify({
+                                   id: products[0].id,
+                                   name: products[0].name,
+                                   featured: products[0].featured,
+                                   category: products[0].category
+                               }, null, 2) : 'No products in database');
+                debugResults.allProducts = { success: true, message, count: products.length, responseTime };
+                logResult('allProductsResult', message, 'success');
+
+            } catch (error) {
+                const message = '❌ All Products API: Connection Failed\n' +
+                               'Error: ' + error.message + '\n' +
+                               'Type: ' + error.name + '\n' +
+                               'Possible causes:\n' +
+                               '- CORS not configured properly\n' +
+                               '- Backend server not running\n' +
+                               '- Network connectivity issues\n' +
+                               '- Railway deployment errors\n' +
+                               '- MongoDB connection failed';
+                debugResults.allProducts = { success: false, message, error: error.message };
+                logResult('allProductsResult', message, 'error');
+                console.error('All products API error:', error);
+            }
+        }
+
+        async function testFeaturedProductsAPI() {
+            const resultDiv = document.getElementById('featuredProductsResult');
+            resultDiv.textContent = 'Testing featured products API...';
+            resultDiv.className = 'debug-result info';
+
+            try {
+                const startTime = Date.now();
+                const response = await fetch('https://rezaraluminium-production.up.railway.app/api/products/featured', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+
+                const endTime = Date.now();
+                const responseTime = endTime - startTime;
+
+                const headers = {};
+                response.headers.forEach((value, name) => {
+                    headers[name] = value;
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text().catch(() => 'No error details available');
+                    const message = '❌ Featured Products API: Failed\n' +
+                                   'Status: ' + response.status + '\n' +
+                                   'Response Time: ' + responseTime + 'ms\n' +
+                                   'Error: ' + errorText + '\n' +
+                                   'Headers: ' + JSON.stringify(headers, null, 2);
+                    debugResults.featuredProducts = { success: false, message, status: response.status };
+                    logResult('featuredProductsResult', message, 'error');
+                    return;
+                }
+
+                const featured = await response.json();
+
+                const message = '✅ Featured Products API: Success\n' +
+                               'Status: ' + response.status + '\n' +
+                               'Response Time: ' + responseTime + 'ms\n' +
+                               'Featured Products Found: ' + featured.length + '\n' +
+                               'CORS Headers: ' + JSON.stringify({
+                                   'Access-Control-Allow-Origin': headers['access-control-allow-origin'],
+                                   'Access-Control-Allow-Credentials': headers['access-control-allow-credentials']
+                               }, null, 2) + '\n' +
+                               (featured.length > 0 ? 'Sample Featured Product: ' + JSON.stringify({
+                                   id: featured[0].id,
+                                   name: featured[0].name,
+                                   category: featured[0].category
+                               }, null, 2) : '⚠️  WARNING: No featured products found - mark products as featured in admin');
+                debugResults.featuredProducts = { success: true, message, count: featured.length, responseTime };
+                logResult('featuredProductsResult', message, featured.length === 0 ? 'warning' : 'success');
+
+            } catch (error) {
+                const message = '❌ Featured Products API: Connection Failed\n' +
+                               'Error: ' + error.message + '\n' +
+                               'Type: ' + error.name + '\n' +
+                               'Possible causes:\n' +
+                               '- CORS not configured properly\n' +
+                               '- Backend server not running\n' +
+                               '- Network connectivity issues\n' +
+                               '- Railway deployment errors\n' +
+                               '- MongoDB connection failed\n' +
+                               '- Featured products endpoint not implemented';
+                debugResults.featuredProducts = { success: false, message, error: error.message };
+                logResult('featuredProductsResult', message, 'error');
+                console.error('Featured products API error:', error);
+            }
+        }
+
+        async function testCORSHeaders() {
+            const resultDiv = document.getElementById('corsHeadersResult');
+            resultDiv.textContent = 'Testing CORS headers...';
+            resultDiv.className = 'debug-result info';
+
+            try {
+                // Test OPTIONS request (preflight)
+                const optionsResponse = await fetch('https://rezaraluminium-production.up.railway.app/api/products', {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': window.location.origin,
+                        'Access-Control-Request-Method': 'GET',
+                        'Access-Control-Request-Headers': 'content-type'
+                    }
+                });
+
+                const optionsHeaders = {};
+                optionsResponse.headers.forEach((value, name) => {
+                    optionsHeaders[name] = value;
+                });
+
+                // Test actual GET request
+                const getResponse = await fetch('https://rezaraluminium-production.up.railway.app/api/products', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+
+                const getHeaders = {};
+                getResponse.headers.forEach((value, name) => {
+                    getHeaders[name] = value;
+                });
+
+                const message = '✅ CORS Headers Test Results\n\n' +
+                               'OPTIONS (Preflight) Response:\n' +
+                               'Status: ' + optionsResponse.status + '\n' +
+                               'CORS Headers: ' + JSON.stringify({
+                                   'Access-Control-Allow-Origin': optionsHeaders['access-control-allow-origin'],
+                                   'Access-Control-Allow-Methods': optionsHeaders['access-control-allow-methods'],
+                                   'Access-Control-Allow-Headers': optionsHeaders['access-control-allow-headers'],
+                                   'Access-Control-Allow-Credentials': optionsHeaders['access-control-allow-credentials'],
+                                   'Access-Control-Max-Age': optionsHeaders['access-control-max-age']
+                               }, null, 2) + '\n\n' +
+                               'GET Request Response:\n' +
+                               'Status: ' + getResponse.status + '\n' +
+                               'CORS Headers: ' + JSON.stringify({
+                                   'Access-Control-Allow-Origin': getHeaders['access-control-allow-origin'],
+                                   'Access-Control-Allow-Credentials': getHeaders['access-control-allow-credentials'],
+                                   'Access-Control-Expose-Headers': getHeaders['access-control-expose-headers']
+                               }, null, 2) + '\n\n' +
+                               'Analysis:\n' +
+                               (optionsHeaders['access-control-allow-origin'] && getHeaders['access-control-allow-origin'] ?
+                                '✅ CORS is properly configured' :
+                                '❌ CORS configuration issues detected');
+
+                debugResults.corsHeaders = {
+                    success: true,
+                    optionsHeaders,
+                    getHeaders,
+                    message
+                };
+                logResult('corsHeadersResult', message, 'success');
+
+            } catch (error) {
+                const message = '❌ CORS Headers Test Failed\n' +
+                               'Error: ' + error.message + '\n' +
+                               'This usually indicates:\n' +
+                               '- CORS not configured on backend\n' +
+                               '- Backend not handling OPTIONS requests\n' +
+                               '- Missing Access-Control-Allow-Origin header\n' +
+                               '- Missing Access-Control-Allow-Credentials header';
+                debugResults.corsHeaders = { success: false, message, error: error.message };
+                logResult('corsHeadersResult', message, 'error');
+                console.error('CORS headers test error:', error);
+            }
+        }
+
+        function generateDebugSummary() {
+            const resultDiv = document.getElementById('debugSummaryResult');
+            resultDiv.textContent = 'Generating debug summary...';
+            resultDiv.className = 'debug-result info';
+
+            const successfulTests = Object.values(debugResults).filter(r => r && r.success).length;
+            const totalTests = Object.values(debugResults).filter(r => r !== null).length;
+
+            let summary = '📋 DEBUG SUMMARY\n';
+            summary += '================\n\n';
+            summary += 'Tests Completed: ' + successfulTests + '/' + totalTests + ' passed\n\n';
+
+            // Analyze each test
+            if (debugResults.basicConnectivity) {
+                summary += '🔍 Basic Connectivity: ' + (debugResults.basicConnectivity.success ? '✅ PASS' : '❌ FAIL') + '\n';
+                if (!debugResults.basicConnectivity.success) {
+                    summary += '   Issue: ' + debugResults.basicConnectivity.error + '\n';
+                }
+            } else {
+                summary += '🔍 Basic Connectivity: ⚠️  NOT TESTED\n';
+            }
+
+            if (debugResults.allProducts) {
+                summary += '📊 All Products API: ' + (debugResults.allProducts.success ? '✅ PASS' : '❌ FAIL') + '\n';
+                if (debugResults.allProducts.success) {
+                    summary += '   Products Found: ' + debugResults.allProducts.count + '\n';
+                } else {
+                    summary += '   Issue: ' + debugResults.allProducts.error + '\n';
+                }
+            } else {
+                summary += '📊 All Products API: ⚠️  NOT TESTED\n';
+            }
+
+            if (debugResults.featuredProducts) {
+                summary += '⭐ Featured Products API: ' + (debugResults.featuredProducts.success ? '✅ PASS' : '❌ FAIL') + '\n';
+                if (debugResults.featuredProducts.success) {
+                    summary += '   Featured Products Found: ' + debugResults.featuredProducts.count + '\n';
+                    if (debugResults.featuredProducts.count === 0) {
+                        summary += '   ⚠️  WARNING: No featured products - mark products as featured in admin\n';
+                    }
+                } else {
+                    summary += '   Issue: ' + debugResults.featuredProducts.error + '\n';
+                }
+            } else {
+                summary += '⭐ Featured Products API: ⚠️  NOT TESTED\n';
+            }
+
+            if (debugResults.corsHeaders) {
+                summary += '🔒 CORS Configuration: ' + (debugResults.corsHeaders.success ? '✅ PASS' : '❌ FAIL') + '\n';
+            } else {
+                summary += '🔒 CORS Configuration: ⚠️  NOT TESTED\n';
+            }
+
+            summary += '\n🎯 RECOMMENDED ACTIONS:\n';
+
+            // Generate specific recommendations
+            if (!debugResults.basicConnectivity || !debugResults.basicConnectivity.success) {
+                summary += '1. ✅ Check if Railway backend is running and deployed\n';
+                summary += '2. ✅ Verify Railway deployment logs for errors\n';
+                summary += '3. ✅ Test backend URL directly in browser\n';
+            }
+
+            if (debugResults.basicConnectivity && debugResults.basicConnectivity.success &&
+                (!debugResults.allProducts || !debugResults.allProducts.success)) {
+                summary += '1. ✅ Check MongoDB connection in backend\n';
+                summary += '2. ✅ Verify MONGO_URL environment variable\n';
+                summary += '3. ✅ Check if products exist in database\n';
+            }
+
+            if (debugResults.allProducts && debugResults.allProducts.success &&
+                debugResults.allProducts.count === 0) {
+                summary += '1. ✅ Add products via admin interface\n';
+                summary += '2. ✅ Verify products are saved to database\n';
+            }
+
+            if (debugResults.featuredProducts && debugResults.featuredProducts.success &&
+                debugResults.featuredProducts.count === 0) {
+                summary += '1. ✅ Mark products as featured in admin\n';
+                summary += '2. ✅ Check featured products endpoint implementation\n';
+            }
+
+            if (!debugResults.corsHeaders || !debugResults.corsHeaders.success) {
+                summary += '1. ✅ Update backend CORS configuration\n';
+                summary += '2. ✅ Add GitHub Pages domain to allowedOrigins\n';
+                summary += '3. ✅ Ensure credentials: true in CORS config\n';
+                summary += '4. ✅ Check for Access-Control-Allow-Origin header\n';
+            }
+
+            if (successfulTests === totalTests && totalTests > 0) {
+                summary += '\n🎉 ALL TESTS PASSED!\n';
+                summary += 'Your API connection should be working correctly.\n';
+                summary += 'If you still see issues, try:\n';
+                summary += '- Clearing browser cache\n';
+                summary += '- Testing in incognito mode\n';
+                summary += '- Checking for JavaScript errors in console\n';
+            } else {
+                summary += '\n⚠️  SOME TESTS FAILED\n';
+                summary += 'Review the failed tests above and take recommended actions.\n';
+                summary += 'Check browser console (F12) for additional error details.\n';
+            }
+
+            debugResults.debugSummary = summary;
+            logResult('debugSummaryResult', summary, successfulTests === totalTests ? 'success' : 'warning');
+        }
+
+        // Auto-scroll to results
+        function scrollToResult(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Add event listeners to scroll to results
+        document.querySelectorAll('.debug-button').forEach(button => {
+            button.addEventListener('click', function() {
+                setTimeout(() => {
+                    const resultId = this.id.replace('test', 'Result');
+                    scrollToResult(resultId);
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>

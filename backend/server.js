@@ -33,9 +33,31 @@ app.use(cors({
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
+  exposedHeaders: ['Content-Length', 'Content-Range', 'Content-Type'],
   maxAge: 86400
 }));
+
+// Add explicit CORS headers to ensure they're always sent
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Origin, X-Requested-With');
+  res.header('Access-Control-Expose-Headers', 'Content-Length, Content-Range, Content-Type');
+  res.header('Access-Control-Max-Age', '86400');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    console.log('Handling OPTIONS request for:', req.path);
+    console.log('Request headers:', req.headers);
+    res.status(200).send();
+    return;
+  }
+
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path} from ${req.headers.origin || 'unknown origin'}`);
+  next();
+});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
@@ -61,14 +83,8 @@ const productRoutes = require('./routes/products');
 app.use('/api/admin', adminRoutes);
 app.use('/api/products', productRoutes);
 
-// Public API for frontend
-app.get('/api/products', (req, res) => {
-  // This will be handled in productRoutes
-});
-
-app.get('/api/products/featured', (req, res) => {
-  // This will be handled in productRoutes
-});
+// Public API for frontend - routes are handled by productRoutes
+// These comments are removed to avoid confusion
 
 // Serve admin views
 app.get('/admin/login', (req, res) => {
