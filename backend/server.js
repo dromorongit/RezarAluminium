@@ -20,6 +20,7 @@ app.use(cors({
     'https://dromorongit.github.io',
     'http://localhost:3000',
     'https://rezaraluminium-production.up.railway.app',
+    'https://rezaraluminium.online',
     /^http:\/\/localhost:\d+$/,
     /^http:\/\/127\.0\.0\.1:\d+$/,
     /^https:\/\/.*\.github\.io$/,
