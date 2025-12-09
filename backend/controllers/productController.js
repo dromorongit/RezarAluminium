@@ -31,7 +31,7 @@ const createProduct = async (req, res) => {
   try {
     console.log('Creating product:', req.body);
     console.log('Files:', req.files);
-    const { name, category, shortDescription, longDescription, price, featured } = req.body;
+    const { name, category, shortDescription, longDescription, featured } = req.body;
 
     // Generate slug
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -69,7 +69,7 @@ const createProduct = async (req, res) => {
       category,
       shortDescription,
       longDescription: longDescription || '',
-      price: parseFloat(price),
+      price: 0,
       currency: 'GHS',
       images,
       additionalImages,
@@ -114,7 +114,7 @@ const updateProduct = async (req, res) => {
       }
     }
 
-    if (updates.price) updates.price = parseFloat(updates.price);
+    // Price is no longer updated from form, keep default 0
     if (updates.featured !== undefined) updates.featured = updates.featured === 'true';
 
     const product = await Product.findOneAndUpdate({ id }, updates, { new: true });
