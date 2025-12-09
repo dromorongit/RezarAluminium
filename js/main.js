@@ -11,9 +11,6 @@ class Cart {
     const existing = this.items.find(item => item.id === product.id);
     if (existing) {
       existing.quantity += quantity;
-      if (existing.quantity > product.stock) {
-        existing.quantity = product.stock;
-      }
     } else {
       this.items.push({ ...product, quantity });
     }
@@ -31,7 +28,7 @@ class Cart {
   updateQuantity(id, quantity) {
     const item = this.items.find(item => item.id === id);
     if (item) {
-      item.quantity = Math.max(0, Math.min(quantity, item.stock));
+      item.quantity = Math.max(0, quantity);
       if (item.quantity === 0) {
         this.removeItem(id);
       } else {
@@ -70,7 +67,7 @@ class Cart {
 
 const cart = new Cart();
 
-// Product Management
+// Project Management
 let products = [];
 
 async function loadProducts() {
@@ -345,7 +342,7 @@ function sortProducts() {
   renderProducts(sorted);
 }
 
-// Product Page
+// Project Page
 function initProductPage() {
   const urlParams = new URLSearchParams(window.location.search);
   const productId = urlParams.get('id');
@@ -388,7 +385,7 @@ function renderProductDetail(product) {
       <p class="product-price">${product.currency} ${product.price.toFixed(2)}</p>
       <div class="quantity-selector">
         <button class="quantity-btn" id="decrease-qty">-</button>
-        <input type="number" class="quantity-input" id="product-qty" value="1" min="1" max="${product.stock}">
+        <input type="number" class="quantity-input" id="product-qty" value="1" min="1">
         <button class="quantity-btn" id="increase-qty">+</button>
       </div>
       <button class="btn btn--primary" id="add-to-cart-detail">Add to Cart</button>
@@ -412,12 +409,7 @@ function renderProductDetail(product) {
   const decreaseBtn = document.querySelector('#decrease-qty');
   const increaseBtn = document.querySelector('#increase-qty');
 
-  console.log('Product page: qtyInput found:', !!qtyInput);
-  console.log('Product page: decreaseBtn found:', !!decreaseBtn);
-  console.log('Product page: increaseBtn found:', !!increaseBtn);
-
   if (decreaseBtn && increaseBtn && qtyInput) {
-    console.log('Product page: Attaching quantity event listeners');
     // Clone and replace to remove existing listeners
     const newDecreaseBtn = decreaseBtn.cloneNode(true);
     const newIncreaseBtn = increaseBtn.cloneNode(true);
@@ -429,26 +421,16 @@ function renderProductDetail(product) {
 
     // Add new listeners
     newDecreaseBtn.addEventListener('click', (e) => {
-      console.log('Product page: Decrease button clicked');
       e.preventDefault();
       const current = parseInt(newQtyInput.value);
       if (current > 1) newQtyInput.value = current - 1;
     });
 
     newIncreaseBtn.addEventListener('click', (e) => {
-      console.log('Product page: Increase button clicked');
       e.preventDefault();
       const current = parseInt(newQtyInput.value);
-      console.log('Product page: Current value:', current, 'Stock:', product.stock);
-      if (current < product.stock) {
-        newQtyInput.value = current + 1;
-        console.log('Product page: Increased to:', newQtyInput.value);
-      } else {
-        console.log('Product page: Cannot increase above stock');
-      }
+      newQtyInput.value = current + 1;
     });
-  } else {
-    console.log('Product page: Quantity controls not found or incomplete');
   }
 
   // Add to cart
@@ -484,7 +466,7 @@ function renderCart() {
         <p>${item.currency} ${item.price.toFixed(2)}</p>
         <div class="quantity-selector">
           <button class="quantity-btn decrease-qty" data-id="${item.id}">-</button>
-          <input type="number" class="quantity-input" value="${item.quantity}" min="1" max="${item.stock}" data-id="${item.id}">
+          <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-id="${item.id}">
           <button class="quantity-btn increase-qty" data-id="${item.id}">+</button>
         </div>
       </div>
@@ -504,10 +486,8 @@ function renderCart() {
   }
 
   // Attach event listeners directly to buttons after rendering
-  console.log('Cart page: Attaching decrease listeners');
   document.querySelectorAll('.decrease-qty').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      console.log('Cart page: Decrease button clicked for item:', e.target.dataset.id);
       e.preventDefault();
       const id = e.target.dataset.id;
       const itemEl = e.target.closest('.cart-item');
@@ -521,24 +501,18 @@ function renderCart() {
     });
   });
 
-  console.log('Cart page: Attaching increase listeners');
   document.querySelectorAll('.increase-qty').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      console.log('Cart page: Increase button clicked for item:', e.target.dataset.id);
       e.preventDefault();
       const id = e.target.dataset.id;
       const itemEl = e.target.closest('.cart-item');
       const input = itemEl.querySelector('.quantity-input');
       const current = parseInt(input.value);
       const item = cart.items.find(i => i.id === id);
-      console.log('Cart page: Current value:', current, 'Stock:', item ? item.stock : 'item not found');
-      if (item && current < item.stock) {
+      if (item) {
         input.value = current + 1;
-        console.log('Cart page: Increased input to:', input.value);
         cart.updateQuantity(id, current + 1);
         renderCart();
-      } else {
-        console.log('Cart page: Cannot increase - condition not met');
       }
     });
   });
@@ -549,7 +523,7 @@ function renderCart() {
       const quantity = parseInt(e.target.value);
       const item = cart.items.find(i => i.id === id);
       if (item) {
-        const validQuantity = Math.max(1, Math.min(quantity, item.stock));
+        const validQuantity = Math.max(1, quantity);
         e.target.value = validQuantity;
         cart.updateQuantity(id, validQuantity);
         renderCart();
