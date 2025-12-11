@@ -501,30 +501,70 @@ function renderProductDetail(product) {
     </div>
     <div class="product-info">
       <h1>${product.name}</h1>
+
+      <div class="product-meta">
+        ${product.category ? `<span class="product-category">${product.category}</span>` : ''}
+        ${product.stock !== undefined ? `<span class="product-stock">Stock: ${product.stock > 0 ? product.stock + ' available' : 'Out of stock'}</span>` : ''}
+      </div>
+
       <div class="product-description">
-        <p><strong>Short Description:</strong> ${product.shortDescription || product.description}</p>
+        ${product.shortDescription ? `<p><strong>Short Description:</strong> ${product.shortDescription}</p>` : ''}
         ${product.longDescription ? `<p><strong>Full Description:</strong> ${product.longDescription}</p>` : ''}
-        ${product.category ? `<p><strong>Category:</strong> ${product.category}</p>` : ''}
-        ${product.specs && Object.keys(product.specs).length > 0 ? `
-          <div class="product-specs">
-            <h3>Specifications:</h3>
-            <ul>
-              ${Object.entries(product.specs).map(([key, value]) => `<li><strong>${key}:</strong> ${value}</li>`).join('')}
-            </ul>
-          </div>
+        ${product.description && !product.shortDescription && !product.longDescription ? `<p><strong>Description:</strong> ${product.description}</p>` : ''}
+      </div>
+
+      ${product.specs && Object.keys(product.specs).length > 0 ?
+        `
+        <div class="product-specs">
+          <h3>Technical Specifications:</h3>
+          <ul>
+            ${Object.entries(product.specs).map(([key, value]) => `<li><strong>${key}:</strong> ${value}</li>`).join('')}
+          </ul>
+        </div>
         ` : ''}
+
+      <div class="product-pricing">
+        <p class="product-price">${product.currency} ${product.price.toFixed(2)}</p>
+        ${product.price > 1000 ? `<p class="price-note">Bulk pricing available - contact us for quotes</p>` : ''}
       </div>
-      <p class="product-price">${product.currency} ${product.price.toFixed(2)}</p>
-      <div class="quantity-selector">
-        <button class="quantity-btn" id="decrease-qty">-</button>
-        <input type="number" class="quantity-input" id="product-qty" value="1" min="1">
-        <button class="quantity-btn" id="increase-qty">+</button>
+
+      <div class="product-actions">
+        <div class="quantity-selector">
+          <button class="quantity-btn" id="decrease-qty">-</button>
+          <input type="number" class="quantity-input" id="product-qty" value="1" min="1">
+          <button class="quantity-btn" id="increase-qty">+</button>
+        </div>
+        <button class="btn btn--primary" id="add-to-cart-detail">Add to Cart</button>
+        <button class="btn btn--secondary" id="request-quote">Request Quote</button>
       </div>
-      <button class="btn btn--primary" id="add-to-cart-detail">Add to Cart</button>
-      <button class="btn btn--secondary" id="request-quote">Request Quote</button>
+
+      ${product.video && product.video.length > 0 ?
+        `
+        <div class="product-video">
+          <h3>Product Video</h3>
+          <div class="video-gallery">
+            ${product.video.map(videoUrl => `
+              <div class="video-item">
+                <iframe width="560" height="315" src="${videoUrl}" frameborder="0" allowfullscreen></iframe>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        ` : ''}
+
+      ${product.attachments && product.attachments.length > 0 ?
+        `
+        <div class="product-attachments">
+          <h3>Downloadable Resources</h3>
+          <ul>
+            ${product.attachments.map(attachment => `
+              <li><a href="${attachment}" target="_blank" class="attachment-link">Download ${attachment.split('/').pop()}</a></li>
+            `).join('')}
+          </ul>
+        </div>
+        ` : ''}
     </div>
   `;
-
   // Gallery functionality
   const mainImage = document.querySelector('#main-image');
   const thumbs = document.querySelectorAll('.thumb');
