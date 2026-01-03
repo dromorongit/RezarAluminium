@@ -627,6 +627,54 @@ button {
   height: 20px;
 }
 
+/* Developer Credits */
+.developer-credits {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #e2e8f0;
+  margin: 8px 0 0 0;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, rgba(200, 16, 46, 0.1) 0%, rgba(200, 16, 46, 0.05) 100%);
+  border: 1px solid rgba(200, 16, 46, 0.2);
+  border-radius: 20px;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition);
+}
+
+.developer-credits::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.developer-credits:hover {
+  background: linear-gradient(135deg, rgba(200, 16, 46, 0.15) 0%, rgba(200, 16, 46, 0.1) 100%);
+  border-color: rgba(200, 16, 46, 0.3);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(200, 16, 46, 0.2);
+}
+
+.developer-credits:hover::before {
+  left: 100%;
+}
+
+/* Responsive adjustments for developer credits */
+@media (max-width: 768px) {
+  .developer-credits {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    margin: 6px 0 0 0;
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .nav-link--about,
